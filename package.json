@@ -8,5 +8,8 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "rxjs": "^6.5.3"
+  }
 }

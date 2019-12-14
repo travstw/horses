@@ -7,6 +7,7 @@ export class Channel {
     output;
     name;
     analyser;
+    audioReady = false;
 
     /**
      * @param {context, audio, nodes, name} opts
@@ -20,6 +21,9 @@ export class Channel {
         this.analyser = this.context.createAnalyser();
 
         this.patchSignalChain();
+
+        // make sure audio is decoded before trying to play
+        this.audio.audioReady().subscribe((ready) => this.audioReady = ready);
     }
 
     patchSignalChain() {
@@ -33,6 +37,9 @@ export class Channel {
     }
 
     start(time = 0) {
+        if (!this.audioReady) {
+            return;
+        }
         this.audio.start(time);
     }
 
@@ -41,7 +48,6 @@ export class Channel {
     }
 
     getChannelAudioParams() {
-        console.log(this.nodes);
         return this.nodes.reduce((params, node) => {
             const nodeParams = node.getAudioParams();
             Object.assign(params, nodeParams);

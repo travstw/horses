@@ -1,16 +1,16 @@
-
+import { BehaviorSubject } from 'rxjs';
 export class Audio {
     context;
     decodedBuffer;
     node;
     isReady = false;
+    audioReady$ = new BehaviorSubject(false);
 
     /**
      * Creates Audio node
      * @param {context, rawBuffer, params} opts
      */
     constructor(opts) {
-        console.log(opts);
         this.context = opts.context;
         this.type = 'audio';
 
@@ -25,6 +25,7 @@ export class Audio {
         this.node.buffer = this.decodedBuffer;
         this.node.loop = params.loop || false;
         this.isReady = true;
+        this.isReady$.next(true);
     }
 
     connect(output) {
@@ -57,5 +58,9 @@ export class Audio {
                 playbackRate: this.node.playbackRate
             }
         };
+    }
+
+    audioReady() {
+        return this.audioReady$;
     }
 }
