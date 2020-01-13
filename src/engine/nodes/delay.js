@@ -1,11 +1,11 @@
 
 export class Delay {
-    context;
-    delay;
-    feedback;
-    lpfNode;
-    node;
-    feedbackNode;
+    // context;
+    // delay;
+    // feedback;
+    // lpfNode;
+    // node;
+    // feedbackNode;
 
     constructor(opts) {
         this.context = opts.context;

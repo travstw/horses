@@ -1,8 +1,8 @@
 export class Distortion {
-    context;
-    gain;
-    curve;
-    node;
+    // context;
+    // gain;
+    // curve;
+    // node;
 
     constructor(opts) {
         this.context = opts.context;
@@ -42,14 +42,18 @@ export class Distortion {
 }
 
 class GainParam extends AudioParam {
-    name = 'gain';
-    defaultValue = 0;
-    maxValue =  100;
-    minValue = 0;
-    value;
+    // name = 'gain';
+    // defaultValue = 0;
+    // maxValue =  100;
+    // minValue = 0;
+    // value;
 
     constructor(gain) {
         super();
+        this.name = 'gain';
+        this.defaultValue = 0;
+        this.maxValue =  100;
+        this.minValue = 0;
         this.value = gain;
     }
 }

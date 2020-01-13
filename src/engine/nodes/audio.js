@@ -1,10 +1,11 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 export class Audio {
-    context;
-    decodedBuffer;
-    node;
-    isReady = false;
-    audioReady$ = new BehaviorSubject(false);
+    // context;
+    // decodedBuffer;
+    // node;
+    // isReady = false;
+    // audioReady$ = new BehaviorSubject(false);
+    // ended$ = new Subject();
 
     /**
      * Creates Audio node
@@ -13,6 +14,9 @@ export class Audio {
     constructor(opts) {
         this.context = opts.context;
         this.type = 'audio';
+        this.isReady = false;
+        this.audioReady$ = new BehaviorSubject(false);
+        this.ended$ = new Subject();
 
         this.context.decodeAudioData(opts.buffer).then(buffer => {
             this.decodedBuffer = buffer;
@@ -23,19 +27,21 @@ export class Audio {
     createSourceNode(params = {}) {
         this.node = this.context.createBufferSource();
         this.node.buffer = this.decodedBuffer;
-        this.node.loop = params.loop || false;
+        this.node.loop = params.loop || true;
         this.isReady = true;
-        this.isReady$.next(true);
+        this.audioReady$.next(true);
+        this.node.onended = (event) => {
+            this.ended$.next(true);
+        };
     }
 
     connect(output) {
+        console.log(output, this.node);
         this.node.connect(output.node);
     }
 
-    subscribeToEnd(callback) {
-        this.node.onended = (event) => {
-            callback(event);
-        };
+    ended() {
+        return this.ended$;
     }
 
     start(time) {
@@ -44,11 +50,11 @@ export class Audio {
             return;
         }
 
-        this.node.start(time || 0);
+        this.node.start(time);
     }
 
     stop(time) {
-        this.node.stop(time || 0);
+        this.node.stop(time);
     }
 
     getAudioParams() {

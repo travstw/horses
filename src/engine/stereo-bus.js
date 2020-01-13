@@ -1,9 +1,9 @@
 
 export class StereoBus {
-    context;
-    input;
-    stereoOut;
-    nodes;
+    // context;
+    // input;
+    // stereoOut;
+    // nodes;
 
     /**
      * @param {context} opts

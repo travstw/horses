@@ -1,8 +1,7 @@
 
-
 export class Gain {
-    context;
-    node;
+    // context;
+    // node;
 
     constructor(opts) {
         this.context = opts.context;
