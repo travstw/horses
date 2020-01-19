@@ -13,6 +13,7 @@ export class Audio {
      */
     constructor(opts) {
         this.context = opts.context;
+        this.name = opts.name;
         this.type = 'audio';
         this.isReady = false;
         this.audioReady$ = new BehaviorSubject(false);
@@ -36,7 +37,6 @@ export class Audio {
     }
 
     connect(output) {
-        console.log(output, this.node);
         this.node.connect(output.node);
     }
 

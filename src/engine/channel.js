@@ -15,13 +15,16 @@ export class Channel {
     constructor(opts) {
         this.id = uuid();
         this.context = opts.context;
+        this.logger = opts.logger;
         this.audio = opts.audio;
         this.name = opts.name;
         this.endedEvent$ = opts.endedEvent$;
         this.output = NodeFactory.createNode('gain', {context: this.context});
         this.nodes = [this.audio, ...opts.nodes, this.output];
         this.analyser = this.context.createAnalyser();
-        this.startOffset = opts.startOffset;
+        this.drift = opts.drift;
+        this.secondsPerMeasure = opts.secondsPerMeasure;
+        this.startMeasure = opts.startMeasure;
         this.duration = opts.duration;
         this.fadeIn = opts.fadeIn;
         this.fadeOut = opts.fadeOut;
@@ -30,15 +33,52 @@ export class Channel {
         this.audio.audioReady().subscribe((ready) => {
             if (ready) {
                 this.patchSignalChain();
-                this.output.node.gain.setValueAtTime(0, 0);
-                this.output.node.gain.linearRampToValueAtTime(.75, this.context.currentTime + this.fadeIn);
-                this.output.node.gain.setTargetAtTime(0, this.duration - this.fadeOut, this.fadeOut / 3 );
-                this.start(this.startOffset);
-                this.stop(this.context.currentTime + this.duration);
+                this.output.node.gain.setValueAtTime(0, this.context.currentTime);
+                this.output.node.gain.linearRampToValueAtTime(1.0, this.context.currentTime + this.drift + this.fadeIn);
+
+                if (this.duration) {
+                    this.output.node.gain.setTargetAtTime(0, this.context.currentTime + (this.duration - this.fadeOut),
+                    this.fadeOut / 3 );
+                }
+
+                const startOffset = this.calculateStartOffset(this.startMeasure, this.drift);
+
+                this.start(this.context.currentTime + startOffset);
+
+                // Only set a stop point if there's a duration... otherwise play forever
+                if (this.duration) {
+                    this.stop(this.context.currentTime + startOffset + this.drift + this.duration);
+                }
+
 
                 this.audio.ended().subscribe(() => this.endedEvent$.next(this.id));
             }
         });
+    }
+
+    calculateStartOffset(offset = 0, drift = 0) {
+
+        let startOffset;
+        if (offset) {
+            startOffset = (this.secondsPerMeasure * 4.0) * offset;
+        } else {
+            startOffset = (this.secondsPerMeasure * 4.0);
+        }
+
+        let startTime;
+
+        // context has been running for less time than 4 measures
+        if (this.context.currentTime < startOffset) {
+            startTime = (startOffset - this.context.currentTime) + drift;
+        } else {
+            console.log('here')
+            startTime = (this.secondsPerMeasure * 4.0) - (this.context.currentTime % (this.secondsPerMeasure * 4.0)) + drift;
+        }
+
+        this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);
+
+        return startTime;
+
     }
 
     playing() {}

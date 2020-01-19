@@ -1,8 +1,36 @@
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/css?family=Rye&display=swap" rel="stylesheet">
+        <link rel="icon" href="../assets/images/cover.png">
+        <link rel="stylesheet" href="styles.css">
+        <title>Self Portrait</title>
     </head>
     <body>
-        <button id="start">Start</button>
+        <div class="section-video">
+            <div class="bg-video_overlay"></div>
+            <div class="bg-video">
+                <video id="horses1" class="bg-video_content" muted loop>
+                    <source src="../assets/video/horses.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <h2 class="title">ALL THE TIRED HORSES</h2>
+        <div class="menu">
+            <a id="about" class="menu-items">&#9737; About</a>
+            <a id="settings" class="menu-items">&#9737; Settings</a>
+        </div>
+        <div class="modals" id="about-modal">
+            <h2>About</h2>
+            <a class="modal-close">X</a>
+        </div>
+        <div class="modals" id="settings-modal">
+            <h2>Settings</h2>
+            <a class="modal-close">X</a>
+        </div>
+        <div id="modal-background"></div>
+        <div><a id="start"><div class="start-text">Ride</div></a></div>
+        <div id="logs"></div>
         <script src="main.js" type="module"></script>
     </body>
 </html>

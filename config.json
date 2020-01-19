@@ -19,7 +19,8 @@
             "subtype": "main",
             "filename": "ac_main_chords.mp3",
             "title": "ac_main_chords",
-            "playThreshold": 0
+            "playThreshold": 0,
+            "startMeasure": 0
         },
         {
             "static": false,
@@ -119,7 +120,8 @@
             "subtype": "main",
             "filename": "shaker_groove.mp3",
             "title": "shaker_groove",
-            "playThreshold": 0
+            "playThreshold": 0,
+            "startMeasure": 2
         },
         {
             "static": true,
@@ -129,7 +131,8 @@
             "subtype": "main",
             "filename": "tambo.mp3",
             "title": "tambo",
-            "playThreshold": 0
+            "playThreshold": 0,
+            "startMeasure": 4
         },
         {
             "static": false,
@@ -149,7 +152,8 @@
             "subtype": "main",
             "filename": "trem_main_melody.mp3",
             "title": "trem_main_melody",
-            "playThreshold": 0
+            "playThreshold": 0,
+            "startMeasure": 4
         }
     ]
 }

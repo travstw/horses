@@ -1,4 +1,5 @@
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { Logger } from '../logger';
 import { getJsonFile, getRandomInteger } from '../utils';
 import { MediaService } from './media-service';
 import { Scheduler } from './scheduler';
@@ -9,18 +10,24 @@ export class Composer {
     constructor(context) {
         this.context = context;
         this.channels = [];
+        this.logger = new Logger();
         this.scheduleEvent$ = new Subject();
         this.endedEvent$ = new Subject();
+        this.playEvent$ = new Subject();
+        this.currentPlaying$ = new BehaviorSubject([]);
         this.stereoBus = new StereoBus({ context });
-        this.startTime;
+
     }
 
     async init() {
+        this.logger.log('Priming the horses...');
         await this.getConfig();
+        this.secondsPerMeasure = (60.0 / this.config.song.bpm) * 4;
         this.mediaService = new MediaService(this.config.tracks);
         this.scheduler = new Scheduler(this.config.song.numSchedulers, this.scheduleEvent$, ...this.config.song.schedulerRange);
         this.scheduleEvent$.subscribe(() => this.onScheduleEvent());
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
+        await this.loadStaticTracks();
     }
 
     async getConfig() {
@@ -36,22 +43,80 @@ export class Composer {
         this.scheduler.start();
     }
 
+    async loadStaticTracks() {
+        const tracks = this.mediaService.tracks;
+        for (let i = 0; i < tracks.length; i++) {
+            if (tracks[i].static) {
+                const name = tracks[i].title;
+                this.logger.log(`Loading Track '${name}'`);
+
+                let buffer;
+                try {
+                    buffer = await this.mediaService.getTrack(i);
+                } catch (e) {
+                    // something happened fetching the file... just log it and move on.
+                    console.error(e)
+                    continue;
+                }
+
+                const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
+                const context = this.context;
+
+                const channelOptions = {
+                    context,
+                    logger: this.logger,
+                    audio,
+                    nodes: [],
+                    name: audio.name,
+                    playEvent$: this.playEvent$,
+                    endedEvent$: this.endedEvent$,
+                    drift: 0,
+                    secondsPerMeasure: this.secondsPerMeasure,
+                    startMeasure: tracks[i].startMeasure,
+                    duration: this.config.song.length,
+                    fadeIn: 5,
+                    fadeOut: 30
+
+                }
+                const channel = new Channel(channelOptions);
+                this.channels.push(channel);
+                this.stereoBus.connect(channel.output);
+            }
+        }
+        return;
+    }
+
     async onScheduleEvent() {
-        console.log('scheduleEvent');
-        const tracks = this.mediaService.getFilteredTrackList((track) => track);
+        this.logger.log('Schedule Event Fired');
+        const tracks = this.mediaService.getFilteredTrackList((track) => !track.static);
         const index = getRandomInteger(0, tracks.length - 1);
-        const buffer = await this.mediaService.getTrack(index);
-        const audio = NodeFactory.createNode('audio', {context: this.context, buffer});
+        const name = tracks[index].title;
+
+        this.logger.log(`Loading Track '${tracks[index].title}'`);
+
+        let buffer;
+        try {
+            buffer = await this.mediaService.getTrack(index);
+        } catch (e) {
+            // something happened fetching the file... just log it and move on.
+            console.error(e)
+            return;
+        }
+
+        const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
         const context = this.context;
 
         const channelOptions = {
             context,
+            logger: this.logger,
             audio,
             nodes: [],
             name: audio.name,
+            playEvent$: this.playEvent$,
             endedEvent$: this.endedEvent$,
-            startOffset: 0,
-            duration: 20,
+            drift: 0,
+            secondsPerMeasure: this.secondsPerMeasure,
+            duration: 30,
             fadeIn: 5,
             fadeOut: 5
 
@@ -63,7 +128,8 @@ export class Composer {
 
     onEndedEvent(id) {
         // clean up and remove reference to channel with ended audio
-        console.log('ended', id);
+        const channel = this.channels.find((c) => c.id === id);
+        this.logger.log(`Track '${channel.name}' ended`);
         this.channels = this.channels.filter(c => c.id !== id);
     }
 
