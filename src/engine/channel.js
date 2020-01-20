@@ -34,20 +34,22 @@ export class Channel {
             if (ready) {
                 this.patchSignalChain();
                 this.output.node.gain.setValueAtTime(0, this.context.currentTime);
-                this.output.node.gain.linearRampToValueAtTime(1.0, this.context.currentTime + this.drift + this.fadeIn);
+
+                const startTime = this.calculateStartOffset(this.startMeasure, this.drift);
+                console.log('startTime', startTime);
+                console.log('currentTime', this.context.currentTime);
+
+                this.start(startTime);
+                this.output.node.gain.linearRampToValueAtTime(1.0, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
-                    this.output.node.gain.setTargetAtTime(0, this.context.currentTime + (this.duration - this.fadeOut),
+                    this.output.node.gain.setTargetAtTime(0, startTime + (this.duration - this.fadeOut),
                     this.fadeOut / 3 );
                 }
 
-                const startOffset = this.calculateStartOffset(this.startMeasure, this.drift);
-
-                this.start(this.context.currentTime + startOffset);
-
                 // Only set a stop point if there's a duration... otherwise play forever
                 if (this.duration) {
-                    this.stop(this.context.currentTime + startOffset + this.drift + this.duration);
+                    this.stop(startTime + this.drift + this.duration);
                 }
 
 
@@ -56,7 +58,7 @@ export class Channel {
         });
     }
 
-    calculateStartOffset(offset = 0, drift = 0) {
+    calculateStartOffset(offset = 1, drift = 0) {
 
         let startOffset;
         if (offset) {
@@ -65,17 +67,21 @@ export class Channel {
             startOffset = (this.secondsPerMeasure * 4.0);
         }
 
+        console.log(startOffset);
+
         let startTime;
 
         // context has been running for less time than 4 measures
         if (this.context.currentTime < startOffset) {
-            startTime = (startOffset - this.context.currentTime) + drift;
+            console.log('here1');
+            startTime = startOffset;
         } else {
-            console.log('here')
-            startTime = (this.secondsPerMeasure * 4.0) - (this.context.currentTime % (this.secondsPerMeasure * 4.0)) + drift;
+            console.log('here');
+            const nextMeasure = Math.floor(this.context.currentTime / startOffset) + 1;
+            startTime = nextMeasure * startOffset;
         }
 
-        this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);
+        // this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);
 
         return startTime;
 

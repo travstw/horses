@@ -23,7 +23,7 @@
             "filename": "ac_main_chords.mp3",
             "title": "ac_main_chords",
             "playThreshold": 0,
-            "startMeasure": 0
+            "startMeasure": 1
         },
         {
             "static": false,
@@ -124,7 +124,7 @@
             "filename": "shaker_groove.mp3",
             "title": "shaker_groove",
             "playThreshold": 0,
-            "startMeasure": 2
+            "startMeasure": 1
         },
         {
             "static": true,
@@ -135,7 +135,7 @@
             "filename": "tambo.mp3",
             "title": "tambo",
             "playThreshold": 0,
-            "startMeasure": 4
+            "startMeasure": 1
         },
         {
             "static": false,
@@ -145,7 +145,7 @@
             "subtype": "ambience",
             "filename": "trem_ambience.mp3",
             "title": "trem_ambience",
-            "playThreshold": 0
+            "playThreshold": 1
         },
         {
             "static": true,
@@ -156,7 +156,7 @@
             "filename": "trem_main_melody.mp3",
             "title": "trem_main_melody",
             "playThreshold": 0,
-            "startMeasure": 4
+            "startMeasure": 1
         }
     ]
 }

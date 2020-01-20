@@ -7,11 +7,11 @@ export class Logger {
     }
 
     log(message) {
-        const logItem = `${new Date().toISOString()} -- ${message}`;
-        this.logs.push(logItem);
-        if (this.logs.length >  10) {
-            this.logs.shift();
-        }
+        // const logItem = `${new Date().toISOString()} -- ${message}`;
+        // this.logs.push(logItem);
+        // if (this.logs.length >  10) {
+        //     this.logs.shift();
+        // }
 
         // this.render();
     }
@@ -20,7 +20,7 @@ export class Logger {
         let innerHtml = '';
 
         this.logs.forEach((l) => {
-            innerHtml += `<p>${l}</p>`;
+            console.log(l);
         });
 
         this.element.innerHTML = innerHtml;

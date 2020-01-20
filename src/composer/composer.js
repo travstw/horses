@@ -110,9 +110,9 @@ export class Composer {
             endedEvent$: this.endedEvent$,
             drift: 0,
             secondsPerMeasure: this.secondsPerMeasure,
-            duration: 30,
-            fadeIn: 5,
-            fadeOut: 5
+            duration: 45,
+            fadeIn: 10,
+            fadeOut: 10
 
         }
         const channel = new Channel(channelOptions);

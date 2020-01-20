@@ -46,6 +46,9 @@ export class SettingsService {
         const driftCoEff = document.getElementById('drift-coeff');
         driftCoEff.value = this.settings.song.driftCoEff;
 
+        const driftType = document.getElementById('drift-type');
+        driftType.value = this.settings.song.driftType;
+
         const decayEnvelope = document.getElementById('decay-envelope');
         decayEnvelope.value = this.settings.song.decayEnvelope;
 
@@ -98,7 +101,17 @@ export class SettingsService {
 
         apply.addEventListener('click', () => {
             this.publish();
+            this.showMessage();
         });
 
+    }
+
+    showMessage() {
+        const messageContainer = document.getElementById('settings-message');
+
+        messageContainer.style.opacity = '1';
+        setTimeout(() => {
+            messageContainer.style.opacity = '0';
+        }, 3000);
     }
 }

@@ -50,7 +50,7 @@ export class Audio {
             return;
         }
 
-        this.node.start(time);
+        this.node.start(time, 0);
     }
 
     stop(time) {

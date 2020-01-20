@@ -6,15 +6,19 @@ export class VideoService {
         this.videos = ['horses.mp4', 'cowboy.mp4', 'fence.mp4', 'tree.mp4', 'desert.mp4'];
     }
 
-    start() {
+    async start() {
         const video = document.createElement('video');
         const selectedVideo = this.videos[getRandomInteger(0, this.videos.length - 1)];
         video.src = `../assets/video/${selectedVideo}`;
         video.classList.add('bg-video_content');
-        // video.style.opacity = 0;
-        video.style.opacity = .85;
+        video.style.opacity = 0;
         this.container.appendChild(video);
-        video.play();
+        try {
+            await video.play();
+            video.style.opacity = .85;
+        } catch (e) {
+            console.error('Video could not play', e);
+        }
         console.log('new video');
 
         setTimeout(() => {

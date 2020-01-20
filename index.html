@@ -2,7 +2,7 @@
     <head>
         <link href="https://fonts.googleapis.com/css?family=Rye&display=swap" rel="stylesheet">
         <link rel="icon" href="assets/images/cover.png">
-        <link rel="stylesheet" href="dist/styles.css">
+        <link rel="stylesheet" href="styles.css">
         <title>Self Portrait</title>
     </head>
     <body>
@@ -65,46 +65,69 @@
             <h2>Settings</h2>
             <a class="modal-close">X</a>
             <div class="modal-content-container" id="settings-content">
-                <label class="settings-label" for="song-length">Song Length: </label>
-                <select id="song-length" class="settings-select" value=4>
-                    <option class="settings-option" value=3>3</option>
-                    <option class="settings-option" value=4>4</option>
-                    <option class="settings-option" value=5>5</option>
-                    <option class="settings-option" value=6>6</option>
-                    <option class="settings-option" value=7>7</option>
-                    <option class="settings-option" value=8>8</option>
-                    <option class="settings-option" value=9>9</option>
-                    <option class="settings-option" value=10>10</option>
-                    <option class="settings-option" value="infinite">Infinite</option>
-                </select><br>
-                <label class="settings-label" for="envelope">Song envelope: </label>
-                <select id="envelope" class="settings-select" value="linear">
-                    <option class="settings-option" value="flat">Flat</option>
-                    <option class="settings-option" value="linear">Linear</option>
-                    <option class="settings-option" value="Exponential">Exponential</option>
-                </select><br>
-                <label class="settings-label" for="envelope-coeff">Envelope Coefficient: </label>
-                <input class="settings-range" id="envelope-coeff" type="range" min="0" max="10" step="1">
-                <br>
-                <label class="settings-label" for="drift-envelope">Drift Envelope: </label>
-                <select id="drift-envelope" class="settings-select" value="linear">
-                    <option class="settings-option" value="flat">Flat</option>
-                    <option class="settings-option" value="linear">Linear</option>
-                    <option class="settings-option" value="exponential">Exponential</option>
-                </select><br>
-                <label class="settings-label" for="drift-coeff">Drift Coefficient: </label>
-                <input class="settings-range" id="drift-coeff" type="range" min="0" max="10" step="1">
-                <br>
-                <label class="settings-label" for="decay-envelope">Decay Envelope: </label>
-                <select id="decay-envelope" class="settings-select" value="linear">
-                    <option class="settings-option" value="flat">Flat</option>
-                    <option class="settings-option" value="linear">Linear</option>
-                    <option class="settings-option" value="exponential">Exponential</option>
-                </select><br>
-                <label class="settings-label" for="decay-coeff">Decay Coefficient: </label>
-                <input class="settings-range" id="decay-coeff" type="range" min="0" max="10" step="1">
-                <br>
-                <a id="settings-submit">Apply</a>
+                <div class="settings-item">
+                    <label class="settings-label" for="song-length">Length: </label>
+                    <select id="song-length" class="settings-select" value=4>
+                        <option class="settings-option" value=3>3</option>
+                        <option class="settings-option" value=4>4</option>
+                        <option class="settings-option" value=5>5</option>
+                        <option class="settings-option" value=6>6</option>
+                        <option class="settings-option" value=7>7</option>
+                        <option class="settings-option" value=8>8</option>
+                        <option class="settings-option" value=9>9</option>
+                        <option class="settings-option" value=10>10</option>
+                        <option class="settings-option" value="infinite">Infinite</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="envelope">Envelope: </label>
+                    <select id="envelope" class="settings-select" value="linear">
+                        <option class="settings-option" value="flat">Flat</option>
+                        <option class="settings-option" value="linear">Linear</option>
+                        <option class="settings-option" value="Exponential">Exponential</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="envelope-coeff">Envelope Depth: </label>
+                    <!-- <div class="settings-range-items"> -->
+                    <input class="settings-range" id="envelope-coeff" name="envelope-coeff" type="range" min="0" max="10" step="1">
+                    <!-- <div class="settings-range-value" id="envelope-coeff_value"></div>
+                    </div> -->
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="drift-envelope">Drift Envelope: </label>
+                    <select id="drift-envelope" class="settings-select" value="linear">
+                        <option class="settings-option" value="flat">Flat</option>
+                        <option class="settings-option" value="linear">Linear</option>
+                        <option class="settings-option" value="exponential">Exponential</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="drift-type">Drift Type: </label>
+                    <select id="drift-type" class="settings-select" value="quantized">
+                        <option class="settings-option" value="quantized">Quantized</option>
+                        <option class="settings-option" value="free">Free</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="drift-coeff">Drift Depth: </label>
+                    <input class="settings-range" id="drift-coeff" type="range" min="0" max="10" step="1">
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="decay-envelope">Decay Envelope: </label>
+                    <select id="decay-envelope" class="settings-select" value="linear">
+                        <option class="settings-option" value="flat">Flat</option>
+                        <option class="settings-option" value="linear">Linear</option>
+                        <option class="settings-option" value="exponential">Exponential</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="decay-coeff">Decay Depth: </label>
+                    <input class="settings-range" id="decay-coeff" type="range" min="0" max="10" step="1">
+                </div>
+                <a id="settings-submit">&#9737; Apply</a>
+                <div id="settings-message">&#936; Settings Applied &#936;</div>
+
             </div>
         </div>
         <div id="modal-background"></div>
