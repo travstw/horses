@@ -17,7 +17,8 @@ export class SettingsService {
             this.initDom();
             return;
         } catch (e) {
-            throw new Error('Failed to fetch settings');
+            // throw new Error('Failed to fetch settings');
+            console.error(e);
         }
     }
 
