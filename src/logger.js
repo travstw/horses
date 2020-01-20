@@ -13,7 +13,7 @@ export class Logger {
             this.logs.shift();
         }
 
-        this.render();
+        // this.render();
     }
 
     render() {

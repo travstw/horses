@@ -1,0 +1,162 @@
+{
+    "song": {
+        "title": "All The Tired Horses",
+        "length": 180,
+        "bpm": 100,
+        "numSchedulers": 4,
+        "schedulerRange": [5000, 30000],
+        "envelope": "linear",
+        "envelopeCoEff": 1,
+        "driftEnvelope" : "exponential",
+        "driftCoEff": 1,
+        "driftType" : "quantized",
+        "decayEnvelope" : "linear",
+        "decayCoEff": 1
+    },
+    "tracks": [
+        {
+            "static": true,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "ac_main_chords.mp3",
+            "title": "ac_main_chords",
+            "playThreshold": 0,
+            "startMeasure": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "ac_reverse.mp3",
+            "title": "ac_reverse",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "banjolele_main_chords.mp3",
+            "title": "banjolele_main_chords",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "creepy_plinks.mp3",
+            "title": "creepy_plinks",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "floating_harmonics.mp3",
+            "title": "floating_harmonics",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "lofi_thump.mp3",
+            "title": "lofi_thump",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "organ_main_chords.mp3",
+            "title": "organ_main_chords",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "pickle_clicks.mp3",
+            "title": "pickle_clicks",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "reverse_floating_main_chords.mp3",
+            "title": "reverse_floating_main_chords",
+            "playThreshold": 0
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "shaka_flute.mp3",
+            "title": "shaka_flute",
+            "playThreshold": 0
+        },
+        {
+            "static": true,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "shaker_groove.mp3",
+            "title": "shaker_groove",
+            "playThreshold": 0,
+            "startMeasure": 2
+        },
+        {
+            "static": true,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "tambo.mp3",
+            "title": "tambo",
+            "playThreshold": 0,
+            "startMeasure": 4
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "ambience",
+            "filename": "trem_ambience.mp3",
+            "title": "trem_ambience",
+            "playThreshold": 0
+        },
+        {
+            "static": true,
+            "drift": false,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "main",
+            "filename": "trem_main_melody.mp3",
+            "title": "trem_main_melody",
+            "playThreshold": 0,
+            "startMeasure": 4
+        }
+    ]
+}

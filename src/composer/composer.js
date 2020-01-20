@@ -7,7 +7,7 @@ import { StereoBus } from '../engine/stereo-bus';
 import { NodeFactory } from '../engine/nodes/node-factory';
 import { Channel } from '../engine/channel';
 export class Composer {
-    constructor(context) {
+    constructor(context, settings$) {
         this.context = context;
         this.channels = [];
         this.logger = new Logger();
@@ -17,25 +17,28 @@ export class Composer {
         this.currentPlaying$ = new BehaviorSubject([]);
         this.stereoBus = new StereoBus({ context });
 
+        settings$.subscribe((settings) => {
+            this.settings = settings
+            console.log(this.settings);
+        });
     }
 
     async init() {
         this.logger.log('Priming the horses...');
-        await this.getConfig();
-        this.secondsPerMeasure = (60.0 / this.config.song.bpm) * 4;
-        this.mediaService = new MediaService(this.config.tracks);
-        this.scheduler = new Scheduler(this.config.song.numSchedulers, this.scheduleEvent$, ...this.config.song.schedulerRange);
+        this.secondsPerMeasure = (60.0 / this.settings.song.bpm) * 4;
+        this.mediaService = new MediaService(this.settings.tracks);
+        this.scheduler = new Scheduler(this.settings.song.numSchedulers, this.scheduleEvent$, ...this.settings.song.schedulerRange);
         this.scheduleEvent$.subscribe(() => this.onScheduleEvent());
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
         await this.loadStaticTracks();
     }
 
-    async getConfig() {
+    async getsettings() {
         try {
-            const config = await getJsonFile('../../config.json');
-            this.config = config;
+            const settings = await getJsonFile('../../settings.json');
+            this.settings = settings;
         } catch (e) {
-            throw new Error('Failed to fetch config');
+            throw new Error('Failed to fetch settings');
         }
     }
 
@@ -73,7 +76,7 @@ export class Composer {
                     drift: 0,
                     secondsPerMeasure: this.secondsPerMeasure,
                     startMeasure: tracks[i].startMeasure,
-                    duration: this.config.song.length,
+                    duration: this.settings.song.length,
                     fadeIn: 5,
                     fadeOut: 30
 

@@ -3,14 +3,14 @@
 *::before {
     margin: 0px;
     padding: 0px;
-    box-sizing: inherit;
+    box-sizing: border-box;
 }
 
 html {
     /* font-family: 'Amatic SC', cursive; */
     /* font-family: 'Smokum', cursive; */
     font-family: 'Rye', cursive;
-
+    scroll-behavior: smooth;
 }
 
 .title {
@@ -33,14 +33,11 @@ html {
     background-color: rgb(112, 66, 20);
     height: 100%;
     width: 100%;
-    opacity: .75;
+    opacity: .85;
     z-index: -1;
 }
 
-.bg-video {
-    /* position: absolute;
-    top: 0;
-    left: 0; */
+#bg-video {
     height: 100%;
     width: 100%;
     z-index: -2;
@@ -48,9 +45,21 @@ html {
     overflow: hidden;
     mix-blend-mode: luminosity;
     background-image: url('../assets/images/horses.jpg');
+
+}
+
+.bg-video_image {
+    background-image: url('../assets/images/horses.jpg');
+    opacity: .2;
+    height: 100%;
+    width: 100%;
+    z-index: -2;
 }
 
 .bg-video_content {
+    /* position: absolute;
+    top: 0;
+    left: 0; */
     height: 100%;
     width: 100%;
     object-fit: cover;
@@ -90,6 +99,7 @@ html {
     opacity: 0;
     transition: opacity .5s;
     pointer-events: none;
+    overflow: hidden;
 }
 
 .modals h2 {
@@ -124,6 +134,49 @@ html {
 #about-modal {
     /* opacity: 0; */
     transition: opacity .5s;
+}
+
+.about-modal-menu {
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.about-modal-menu_item {
+    margin-left: 5px;
+    color: inherit;
+    opacity: 0.7;
+    text-decoration: none;
+}
+
+.about-modal-menu_item:hover {
+    color: rgba(112, 66, 20, .8);
+    cursor: pointer;
+}
+
+.about-modal-menu_item:active {
+    cursor: pointer;
+    color: rgba(207, 184, 161, .8);
+}
+
+.modal-content-container {
+    font-size: 14px;
+    padding: 15px;
+    height: 80%;
+    width: 100%;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+.modal-section {
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.about-modal-menu_item_header {
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
 #modal-background {
@@ -173,7 +226,7 @@ html {
 }
 
 .start-text {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     opacity: 0.70;
     vertical-align: middle;
 
