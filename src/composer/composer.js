@@ -33,15 +33,6 @@ export class Composer {
         await this.loadStaticTracks();
     }
 
-    async getsettings() {
-        try {
-            const settings = await getJsonFile('../../settings.json');
-            this.settings = settings;
-        } catch (e) {
-            throw new Error('Failed to fetch settings');
-        }
-    }
-
     start() {
         this.scheduler.start();
     }
