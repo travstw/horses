@@ -60,12 +60,12 @@ select {
     opacity: 0.75;
     overflow: hidden;
     mix-blend-mode: luminosity;
-    background-image: url('assets/images/horses.jpg');
+    background-image: url('./assets/images/horses.jpg');
 
 }
 
 .bg-video_image {
-    background-image: url('assets/images/horses.jpg');
+    background-image: url('./assets/images/horses.jpg');
     opacity: .2;
     height: 100%;
     width: 100%;
