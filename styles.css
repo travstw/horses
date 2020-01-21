@@ -34,7 +34,6 @@ select {
     top: 25px;
     left: 25px;
     opacity: 0.70;
-
 }
 
 .section-video {
@@ -53,6 +52,15 @@ select {
     z-index: -1;
 }
 
+#bg-video_image {
+    object-fit: fill;
+    position: relative;
+    top: 0;
+    left: 0;
+    opacity: .2;
+    z-index: -3;
+}
+
 #bg-video {
     height: 100%;
     width: 100%;
@@ -60,17 +68,16 @@ select {
     opacity: 0.75;
     overflow: hidden;
     mix-blend-mode: luminosity;
-    background-image: url('src/assets/images/horses.jpg');
-
+    /* background-image: url('src/assets/images/horses.jpg'); */
 }
 
-.bg-video_image {
+/* .bg-video_image {
     background-image: url('src/assets/images/horses.jpg');
     opacity: .2;
     height: 100%;
     width: 100%;
     z-index: -2;
-}
+} */
 
 .bg-video_content {
     /* position: absolute;
@@ -220,7 +227,7 @@ select {
     text-align: center;
     font-size: 24px;
     font-family: inherit;
-    opacity: 1;
+    opacity: .75;
     transition: opacity 2s;
 }
 

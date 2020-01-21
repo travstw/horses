@@ -16,6 +16,10 @@ export class Gain {
         this.node.connect(output);
     }
 
+    disconnect(output) {
+        this.node.disconnect(output);
+    }
+
     getAudioParams() {
         return {
             gain: {

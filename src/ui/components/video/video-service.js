@@ -12,7 +12,7 @@ export class VideoService {
         video.src = `src/assets/video/${selectedVideo}`;
         video.classList.add('bg-video_content');
         video.style.opacity = 0;
-        this.container.appendChild(video);
+        this.container.insertBefore(video, this.container.childNodes[0]);
         try {
             await video.play();
             video.style.opacity = .85;

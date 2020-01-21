@@ -33,7 +33,7 @@ export class StereoBus {
     }
 
     disconnect(node) {
-        this.input.disconnect(node);
+        node.disconnect(this.input);
     }
 
     getOutputAudioParams() {

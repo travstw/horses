@@ -39,8 +39,8 @@ export class Composer {
         // can also limit what tracks will play in the beginning using the envelope
         setTimeout(() => {
             this.envelope = new Envelope(this.context);
-            // this.envelope.setValueAtTime(.5, this.context.currentTime + 5);
-            this.envelope.linearRampToValueAtTime(1.0, this.context.currentTime + 10);
+            this.envelope.setValueAtTime(.5, this.context.currentTime + 1);
+            this.envelope.linearRampToValueAtTime(1.0, 10);
             this.scheduler.start();
         }, 15000);
 
@@ -131,10 +131,9 @@ export class Composer {
     onEndedEvent(id) {
         // clean up and remove reference to channel with ended audio
         const channel = this.channels.find((c) => c.id === id);
-        // this.stereoBus.disconnect(channel.output);
+        this.stereoBus.disconnect(channel.output);
         this.logger.log(`Track '${channel.name}' ended`);
         this.channels = this.channels.filter(c => c.id !== id);
-        // console.log('channels:', this.channels.length);
     }
 
     setFadeTimes() {

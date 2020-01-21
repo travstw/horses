@@ -73,11 +73,9 @@ export class Channel {
         // context has been running for less time than 4 measures
         if (this.context.currentTime < startOffset) {
             startTime = startOffset;
-            console.log(this.name, Math.floor(startTime/ (this.secondsPerMeasure * 4)));
         } else {
             const nextMeasure = Math.floor(this.context.currentTime / startOffset) + 1;
             startTime = nextMeasure * startOffset;
-            console.log(this.name, nextMeasure);
         }
 
         // this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);

@@ -11,6 +11,8 @@ export class Envelope {
     }
 
     setValueAtTime(value, time) {
+        console.log('hello there', value, time);
+        console.log(this.node.offset);
         this.node.offset.setValueAtTime(value, time);
     }
 
