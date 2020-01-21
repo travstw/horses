@@ -26,10 +26,14 @@ export class Delay {
     }
 
     connect(output) {
-        this.node.connect(output.node);
+        this.node.connect(output);
     }
 
-    getAudioParams() {
+    disconnect(output) {
+        this.node.disconnect(output);
+    }
+
+    getAllAudioParams() {
         return {
             delay: {
                 delay: this.node.delayTime,
@@ -38,4 +42,13 @@ export class Delay {
             }
         }
     }
+
+    getAudioParam(param) {
+        return {
+            delay: this.node.delayTime,
+            feedback: this.feedbackNode.gain,
+            lpf: this.lpfNode.frequency
+        }[param];
+    }
+
 }

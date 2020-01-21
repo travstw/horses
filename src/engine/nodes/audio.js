@@ -16,7 +16,7 @@ export class Audio {
         this.name = opts.name;
         this.type = 'audio';
         this.isReady = false;
-        this.audioReady$ = new BehaviorSubject(false);
+        this.ready$ = new BehaviorSubject(false);
         this.ended$ = new Subject();
 
         this.context.decodeAudioData(opts.buffer).then(buffer => {
@@ -30,14 +30,18 @@ export class Audio {
         this.node.buffer = this.decodedBuffer;
         this.node.loop = params.loop || true;
         this.isReady = true;
-        this.audioReady$.next(true);
+        this.ready$.next(true);
         this.node.onended = (event) => {
             this.ended$.next(true);
         };
     }
 
     connect(output) {
-        this.node.connect(output.node);
+        this.node.connect(output);
+    }
+
+    disconnect(output) {
+        this.node.disconnect(output);
     }
 
     ended() {
@@ -57,7 +61,7 @@ export class Audio {
         this.node.stop(time);
     }
 
-    getAudioParams() {
+    getAllAudioParams() {
         return {
             audio : {
                 detune: this.node.detune,
@@ -66,7 +70,14 @@ export class Audio {
         };
     }
 
-    audioReady() {
-        return this.audioReady$;
+    getAudioParam(param) {
+        return {
+            detune: this.node.detune,
+            playbackRate: this.node.playbackRate
+        }[param];
+    }
+
+    ready() {
+        return this.ready$;
     }
 }

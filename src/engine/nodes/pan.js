@@ -12,11 +12,21 @@ export class Pan {
         this.node.connect(output);
     }
 
-    getAudioParams() {
+    disconnect(output) {
+        this.node.disconnect(output);
+    }
+
+    getAllAudioParams() {
         return {
             pan: {
                 pan: this.node.pan,
             }
         }
+    }
+
+    getAudioParam(param) {
+        return {
+            pan: this.node.pan,
+        }[param];
     }
 }

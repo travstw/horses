@@ -1,4 +1,4 @@
-import { getJsonFile } from '../../../../utils';
+import { getJsonFile } from '../utils';
 import { BehaviorSubject } from 'rxjs';
 
 export class SettingsService {
@@ -9,7 +9,7 @@ export class SettingsService {
         this.settings$.subscribe((settings) => this.settings = settings);
     }
 
-    async getSettings() {
+    async fetchSettings() {
         try {
             const settings = await getJsonFile();
             this.update(settings);
@@ -20,6 +20,11 @@ export class SettingsService {
             // throw new Error('Failed to fetch settings');
             console.error(e);
         }
+    }
+
+    // get a setting based on supplied filter
+    getSetting(fn) {
+        return fn(this.settings);
     }
 
     update(settings) {

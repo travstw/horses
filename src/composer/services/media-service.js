@@ -1,10 +1,9 @@
 
-import { getAudioBuffer } from '../utils';
+import { getAudioBuffer } from '../../utils';
 
 export class MediaService {
-    // tracks;
 
-    constructor(tracks) {
+    setTracks(tracks) {
         this.tracks = tracks;
     }
 
@@ -15,5 +14,9 @@ export class MediaService {
 
     getFilteredTrackList(filterFn) {
         return this.tracks.filter(filterFn)
+    }
+
+    getImpulse(name) {
+        return getAudioBuffer(`src/assets/audio/impulses/${name}`);
     }
 }

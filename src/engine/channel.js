@@ -1,5 +1,5 @@
 import * as uuid from 'uuid/v1';
-import { NodeFactory } from './nodes/node-factory.js';
+import { NodeFactory } from './node-factory';
 
 export class Channel {
     // context;
@@ -20,7 +20,7 @@ export class Channel {
         this.name = opts.name;
         this.endedEvent$ = opts.endedEvent$;
         this.output = NodeFactory.createNode('gain', {context: this.context});
-        this.nodes = [this.audio, ...opts.nodes, this.output];
+        this.nodes = [this.audio, ...opts.nodes || [], this.output];
         this.analyser = this.context.createAnalyser();
         this.drift = opts.drift;
         this.secondsPerMeasure = opts.secondsPerMeasure;
@@ -28,21 +28,21 @@ export class Channel {
         this.duration = opts.duration;
         this.fadeIn = opts.fadeIn;
         this.fadeOut = opts.fadeOut;
+        this.automationService = opts.automationService;
 
         // make sure audio is decoded before trying to play
-        this.audio.audioReady().subscribe((ready) => {
+        this.audio.ready().subscribe((ready) => {
             if (ready) {
                 this.patchSignalChain();
-                this.output.node.gain.setValueAtTime(0, this.context.currentTime);
-
+                this.automationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
                 const startTime = this.calculateStartOffset(this.startMeasureOffset, this.drift);
 
                 this.start(startTime);
-                this.output.node.gain.linearRampToValueAtTime(1.0, startTime + this.drift + this.fadeIn);
+                this.automationService.exponentialRampToValueAtTime(this.output, 'gain', 1.0, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
-                    this.output.node.gain.setTargetAtTime(0, startTime + (this.duration - this.fadeOut),
-                    this.fadeOut / 3 );
+                    this.automationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),
+                        this.fadeOut / 3);
                 }
 
                 // Only set a stop point if there's a duration... otherwise play forever
@@ -91,7 +91,7 @@ export class Channel {
             if (i === 0) {
                 continue;
             }
-            this.nodes[i - 1].connect(this.nodes[i]);
+            this.nodes[i - 1].connect(this.nodes[i].node);
         }
     }
 
@@ -105,7 +105,7 @@ export class Channel {
 
     getChannelAudioParams() {
         return this.nodes.reduce((params, node) => {
-            const nodeParams = node.getAudioParams();
+            const nodeParams = node.getAllAudioParams();
             Object.assign(params, nodeParams);
             return params;
         }, {});

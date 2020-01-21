@@ -11,8 +11,22 @@
         "driftCoEff": 1,
         "driftType" : "quantized",
         "decayEnvelope" : "linear",
-        "decayCoEff": 1
+        "decayCoEff": 1,
+        "outputLevel": 0.75,
+        "outputReverbLevel": 0.35
     },
+    "impulses": [
+        {
+            "filename": "large-ambience.mp3",
+            "title": "large-ambience",
+            "default": false
+        },
+        {
+            "filename": "large-room.mp3",
+            "title": "large-room",
+            "default": true
+        }
+    ],
     "tracks": [
         {
             "static": true,

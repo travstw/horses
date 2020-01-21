@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../utils';
+import { getRandomInteger } from '../../utils';
 export class Scheduler {
     // active;
     // timers = [];
@@ -17,7 +17,6 @@ export class Scheduler {
 
     schedule() {
         const duration = getRandomInteger(this.min, this.max);
-        console.log(duration);
         const timer = setTimeout(() => {
             this.scheduleEvent$.next(true);
             this.timers = this.timers.reduce((timers, t) => {
