@@ -10,7 +10,7 @@ export class MediaService {
 
     getTrack(index) {
         const track = this.tracks[index];
-        return getAudioBuffer(`assets/audio/${track.filename}`);
+        return getAudioBuffer(`src/assets/audio/${track.filename}`);
     }
 
     getFilteredTrackList(filterFn) {

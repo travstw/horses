@@ -9,7 +9,7 @@ export class VideoService {
     async start() {
         const video = document.createElement('video');
         const selectedVideo = this.videos[getRandomInteger(0, this.videos.length - 1)];
-        video.src = `../assets/video/${selectedVideo}`;
+        video.src = `src/assets/video/${selectedVideo}`;
         video.classList.add('bg-video_content');
         video.style.opacity = 0;
         this.container.appendChild(video);
