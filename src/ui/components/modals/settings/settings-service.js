@@ -11,7 +11,7 @@ export class SettingsService {
 
     async getSettings() {
         try {
-            const settings = await getJsonFile('../assets/settings.json');
+            const settings = await getJsonFile();
             this.update(settings);
             this.publish();
             this.initDom();

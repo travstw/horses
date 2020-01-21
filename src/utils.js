@@ -7,8 +7,9 @@ export const getAudioBuffer = (path) => {
     })
 }
 
-export const getJsonFile = (path) => {
-    const request = new Request(path);
+export const getJsonFile = () => {
+
+    const request = new Request('src/assets/settings.json');
 
     return fetch(request).then(response => {
         return response.json();
