@@ -1,6 +1,7 @@
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Logger } from '../logger';
-import { getJsonFile, getRandomInteger } from '../utils';
+import { getRandomInteger } from '../utils';
+import { Envelope } from './envelope';
 import { MediaService } from './media-service';
 import { Scheduler } from './scheduler';
 import { StereoBus } from '../engine/stereo-bus';
@@ -18,7 +19,7 @@ export class Composer {
         this.stereoBus = new StereoBus({ context });
 
         settings$.subscribe((settings) => {
-            this.settings = settings
+            this.settings = settings;
             console.log(this.settings);
         });
     }
@@ -34,7 +35,15 @@ export class Composer {
     }
 
     start() {
-        this.scheduler.start();
+        // delay start of randomized tracks to let intro play... doesn't have to be perfect.
+        // can also limit what tracks will play in the beginning using the envelope
+        setTimeout(() => {
+            this.envelope = new Envelope(this.context);
+            // this.envelope.setValueAtTime(.5, this.context.currentTime + 5);
+            this.envelope.linearRampToValueAtTime(1.0, this.context.currentTime + 10);
+            this.scheduler.start();
+        }, 15000);
+
     }
 
     async loadStaticTracks() {
@@ -44,15 +53,10 @@ export class Composer {
                 const name = tracks[i].title;
                 this.logger.log(`Loading Track '${name}'`);
 
-                let buffer;
-                try {
-                    buffer = await this.mediaService.getTrack(i);
-                } catch (e) {
-                    // something happened fetching the file... just log it and move on.
-                    console.error(e)
-                    continue;
+                const buffer = await this.getBuffer(i);
+                if (!buffer) {
+                    return;
                 }
-
                 const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
                 const context = this.context;
 
@@ -66,15 +70,10 @@ export class Composer {
                     endedEvent$: this.endedEvent$,
                     drift: 0,
                     secondsPerMeasure: this.secondsPerMeasure,
-                    startMeasure: tracks[i].startMeasure,
-                    duration: this.settings.song.length,
-                    fadeIn: 5,
-                    fadeOut: 30
-
+                    startMeasureOffset: tracks[i].startMeasureOffset,
+                    fadeIn: 15,
                 }
-                const channel = new Channel(channelOptions);
-                this.channels.push(channel);
-                this.stereoBus.connect(channel.output);
+                this.createChannel(channelOptions);
             }
         }
         return;
@@ -82,21 +81,17 @@ export class Composer {
 
     async onScheduleEvent() {
         this.logger.log('Schedule Event Fired');
+        console.log('envelope', this.envelope.value);
         const tracks = this.mediaService.getFilteredTrackList((track) => !track.static);
         const index = getRandomInteger(0, tracks.length - 1);
         const name = tracks[index].title;
 
         this.logger.log(`Loading Track '${tracks[index].title}'`);
 
-        let buffer;
-        try {
-            buffer = await this.mediaService.getTrack(index);
-        } catch (e) {
-            // something happened fetching the file... just log it and move on.
-            console.error(e)
+        const buffer = await this.getBuffer(index);
+        if (!buffer) {
             return;
         }
-
         const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
         const context = this.context;
 
@@ -110,12 +105,25 @@ export class Composer {
             endedEvent$: this.endedEvent$,
             drift: 0,
             secondsPerMeasure: this.secondsPerMeasure,
-            duration: 45,
+            duration: 30,
             fadeIn: 10,
             fadeOut: 10
-
         }
-        const channel = new Channel(channelOptions);
+        this.createChannel(channelOptions);
+    }
+
+    async getBuffer(index) {
+        try {
+           return await this.mediaService.getTrack(index);
+        } catch (e) {
+            // something happened fetching the file... just log it and move on.
+            console.error(e)
+            return;
+        }
+    }
+
+    createChannel(options) {
+        const channel = new Channel(options);
         this.channels.push(channel);
         this.stereoBus.connect(channel.output);
     }
@@ -123,8 +131,10 @@ export class Composer {
     onEndedEvent(id) {
         // clean up and remove reference to channel with ended audio
         const channel = this.channels.find((c) => c.id === id);
+        // this.stereoBus.disconnect(channel.output);
         this.logger.log(`Track '${channel.name}' ended`);
         this.channels = this.channels.filter(c => c.id !== id);
+        // console.log('channels:', this.channels.length);
     }
 
     setFadeTimes() {

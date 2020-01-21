@@ -24,7 +24,7 @@ export class Channel {
         this.analyser = this.context.createAnalyser();
         this.drift = opts.drift;
         this.secondsPerMeasure = opts.secondsPerMeasure;
-        this.startMeasure = opts.startMeasure;
+        this.startMeasureOffset = opts.startMeasureOffset;
         this.duration = opts.duration;
         this.fadeIn = opts.fadeIn;
         this.fadeOut = opts.fadeOut;
@@ -35,9 +35,7 @@ export class Channel {
                 this.patchSignalChain();
                 this.output.node.gain.setValueAtTime(0, this.context.currentTime);
 
-                const startTime = this.calculateStartOffset(this.startMeasure, this.drift);
-                console.log('startTime', startTime);
-                console.log('currentTime', this.context.currentTime);
+                const startTime = this.calculateStartOffset(this.startMeasureOffset, this.drift);
 
                 this.start(startTime);
                 this.output.node.gain.linearRampToValueAtTime(1.0, startTime + this.drift + this.fadeIn);
@@ -53,7 +51,10 @@ export class Channel {
                 }
 
 
-                this.audio.ended().subscribe(() => this.endedEvent$.next(this.id));
+                this.audio.ended().subscribe(() => {
+                    this.audio = null;
+                    this.endedEvent$.next(this.id);
+                });
             }
         });
     }
@@ -67,18 +68,16 @@ export class Channel {
             startOffset = (this.secondsPerMeasure * 4.0);
         }
 
-        console.log(startOffset);
-
         let startTime;
 
         // context has been running for less time than 4 measures
         if (this.context.currentTime < startOffset) {
-            console.log('here1');
             startTime = startOffset;
+            console.log(this.name, Math.floor(startTime/ (this.secondsPerMeasure * 4)));
         } else {
-            console.log('here');
             const nextMeasure = Math.floor(this.context.currentTime / startOffset) + 1;
             startTime = nextMeasure * startOffset;
+            console.log(this.name, nextMeasure);
         }
 
         // this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);

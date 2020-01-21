@@ -32,6 +32,10 @@ export class StereoBus {
         node.connect(this.input);
     }
 
+    disconnect(node) {
+        this.input.disconnect(node);
+    }
+
     getOutputAudioParams() {
         return this.nodes.reduce((params, node) => {
             const nodeParams = node.getAudioParms();

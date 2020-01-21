@@ -42,6 +42,8 @@ export class ModalService {
     }
 
     clearModals() {
+        // window.location.hash.replace('#', '');
+        // window.location.hash = '';
         for (let item of this.modals) {
             item.style.pointerEvents = 'none';
             item.style.opacity = 0;

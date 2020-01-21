@@ -8,6 +8,10 @@ export class Gain {
         this.node = this.context.createGain();
     }
 
+    get gain() {
+        return this.node.gain;
+    }
+
     connect(output) {
         this.node.connect(output);
     }
