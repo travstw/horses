@@ -33,7 +33,10 @@ export class SettingsService {
     update(settings) {
         this.settings = settings;
         this.publish();
-        this.showMessage();
+
+        if (this.settings.changed) {
+            this.showMessage();
+        }
     }
 
     publish() {
@@ -86,42 +89,42 @@ export class SettingsService {
         length.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.length = e.target.value !== 'infinite' ? +e.target.value * 60 : undefined;
-            settings.changed = 'length';
+            settings.changed = { field: 'length', title: 'Length' };
             this.update(settings);
         });
 
         mode.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.mode = e.target.value;
-            settings.changed = 'mode';
+            settings.changed = { field: 'mode', title: 'Mode' };
             this.update(settings);
         });
 
         tracks.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.tracks = e.target.value;
-            settings.changed = 'tracks';
+            settings.changed = { field: 'tracks', title: 'Tracks' };
             this.update(settings);
         });
 
         envelope.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.envelope = e.target.value;
-            settings.changed = 'envelope';
+            settings.changed = { field: 'envelope', title: 'Envelope' };
             this.update(settings);
         });
 
         envelopeCoEff.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.envelopeCoEff = +e.target.value;
-            settings.changed = 'envelopeCoEff';
+            settings.changed = { field: 'envelopeCoEff', title: 'Envelope Depth' };
             this.update(settings);
         });
 
         driftEnvelope.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.driftEnvelope = e.target.value;
-            settings.changed = 'driftEnvelope';
+            settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' };
 
             this.update(settings);
         });
@@ -129,7 +132,7 @@ export class SettingsService {
         driftType.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.driftType = e.target.value;
-            settings.changed = 'driftType';
+            settings.changed = { field: 'driftType', title: 'Drift Type' };
 
             this.update(settings);
         });
@@ -137,7 +140,7 @@ export class SettingsService {
         driftCoEff.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.driftCoEff = +e.target.value;
-            settings.changed = 'driftCoEff';
+            settings.changed = { field: 'driftCoEff', title: 'Drift Depth' };
 
             this.update(settings);
         });
@@ -145,14 +148,14 @@ export class SettingsService {
         decayEnvelope.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.decayEnvelope = e.target.value;
-            settings.changed = 'decayEnvelope';
+            settings.changed = { field: 'decayEnvelope', title: 'Decay Envelope' };
             this.update(settings);
         });
 
         decayCoEff.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.decayCoEff = +e.target.value;
-            settings.changed = 'decayCoEff';
+            settings.changed = { field: 'decayCoEff', title: 'Decay Depth' };
             this.update(settings);
         });
 
@@ -160,28 +163,23 @@ export class SettingsService {
             const settings = {...this.settings};
             const impulse = settings.impulses.find(i => i.title === e.target.value);
             settings.song.selectedReverb = impulse.title;
-            settings.changed = 'selectedReverb';
+            settings.changed = { field: 'selectedReverb', title: 'Reverb Type' };
             this.update(settings);
         });
 
         reverbLevel.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.outputReverbLevel = +e.target.value;
-            settings.changed = 'outputReverbLevel'
+            settings.changed = { field: 'outputReverbLevel', title: 'Reverb Level' };
             this.update(settings);
         });
 
         masterLevel.addEventListener('change', (e) => {
             const settings = {...this.settings};
             settings.song.outputLevel = +e.target.value;
-            settings.changed = 'outputLevel';
+            settings.changed = { field: 'outputLevel', title: 'Master Level' };
             this.update(settings);
         });
-
-        // apply.addEventListener('click', () => {
-        //     this.publish();
-        //     this.showMessage();
-        // });
 
     }
 
@@ -197,8 +195,9 @@ export class SettingsService {
         }
     }
 
-    showMessage() {
+    showMessage(updated) {
         const messageContainer = document.getElementById('settings-message');
+        messageContainer.innerHTML = `&#936; ${this.settings.changed.title} Updated &#936;`
 
         messageContainer.style.opacity = '1';
         setTimeout(() => {

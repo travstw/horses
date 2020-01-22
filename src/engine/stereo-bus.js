@@ -25,10 +25,9 @@ export class StereoBus {
 
         this.settingsService.settings$.subscribe(settings => {
             this.settings = settings
-            if (this.settings) {
-                console.log(this.settings.changed);
+            if (this.settings && this.settings.changed) {
                 // TODO only apply settings if they actually changed...
-                switch (this.settings.changed) {
+                switch (this.settings.changed.field) {
                     case 'outputLevel':
                         const outputLevel = this.settings.song.outputLevel / 10;
                         this.setOutputLevel(outputLevel);
