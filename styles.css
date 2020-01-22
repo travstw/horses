@@ -95,7 +95,7 @@ select {
     position: absolute;
     top: 30px;
     right: 25px;
-    font-size: 18px;
+    font-size: 1.5em;
     z-index: 10;
     opacity: 0.70;
 }
@@ -136,7 +136,8 @@ select {
     top: 10px;
     right: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 18px;
+    font-size: 1.5em;
+    opacity: 0.7;
 }
 
 .modal-close:hover {
@@ -161,7 +162,7 @@ select {
 
 .about-modal-menu {
     width: 100%;
-    font-size: 16px;
+    font-size: 18px;
     text-align: center;
     margin-bottom: 10px;
 }
@@ -182,8 +183,12 @@ select {
     color: rgba(207, 184, 161, .8);
 }
 
+.about-modal-content {
+    font-size: 1.15em;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
 .modal-content-container {
-    font-size: 14px;
     padding: 15px;
     height: 80%;
     width: 100%;
@@ -198,7 +203,7 @@ select {
 }
 
 .about-modal-menu_item_header {
-    font-size: 16px;
+    font-size: 1.25em;
     margin-bottom: 10px;
 }
 
@@ -269,13 +274,16 @@ select {
 
 .settings-label {
     margin-right: 10px;
+    font-size: 1.25em;
     opacity: 0.7;
 }
 
 .settings-range {
     -webkit-appearance: none;
-    width: 10em;
-    height: 3em;
+    /* width: 12em;
+    height: 3em; */
+    width: 180px;
+    height: 42px;
     background: #2c3e50;
     outline: none;
     border-radius: 2px;
@@ -283,7 +291,7 @@ select {
 
 .settings-range-items {
     display: flex;
-    width: 10em;
+    width: 12em;
     height: 3em;
     flex-direction: row;
 }
@@ -316,9 +324,12 @@ select {
 .settings-select {
     position: relative;
     display: flex;
-    width: 10em;
-    height: 3em;
-    line-height: 3;
+    /* width: 12em;
+    height: 3em; */
+    width: 180px;
+    height: 42px;
+    font-size: 1.1em;
+    /* line-height: 3; */
     background: #2c3e50;
     overflow: hidden;
     border-radius: .25em;
@@ -375,11 +386,11 @@ select {
 #settings-message {
     margin: auto;
     width: 100%;
-    padding: 10%;
+    /* padding: 10%; */
     text-align: center;
     margin-top: 10px;
     color: #34495e;
-    font-size: 12px;
+    font-size: 1em;
     opacity: 0;
     transition: opacity 1s;
 }

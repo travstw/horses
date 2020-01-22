@@ -38,7 +38,7 @@ export class Channel {
                 const startTime = this.calculateStartOffset(this.startMeasureOffset);
 
                 this.start(startTime);
-                this.automationService.exponentialRampToValueAtTime(this.output, 'gain', 1.0, startTime + this.drift + this.fadeIn);
+                this.automationService.exponentialRampToValueAtTime(this.output, 'gain', 0.75, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
                     this.automationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),

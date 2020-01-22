@@ -31,6 +31,7 @@ export class Composer {
         this.scheduleEvent$.subscribe(() => this.onScheduleEvent());
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
 
+        // use a dummy gain node to create an envelope
         this.envelope = NodeFactory.createNode('gain', { context: this.context});
         this.stereoBus.connect(this.envelope.node);
         AutomationService.setValueAtTime(this.envelope, 'gain', 0.0, 0);
@@ -105,7 +106,7 @@ export class Composer {
             }
 
             const include = (this.settings.song.mode === 'free');
-            // console.log(types, include);
+            console.log(types, include);
 
             return (track.static === include)
                 && (this.envelope.value > track.playThreshold)
@@ -115,6 +116,7 @@ export class Composer {
 
         // no tracks match play criteria... bail
         if (!tracks.length) {
+            console.log('why no tracks?');
             return;
         }
 
@@ -123,9 +125,10 @@ export class Composer {
 
         console.log(name, tracks);
         const buffer = await this.getBuffer(index);
-
+        console.log('buffer length', buffer.length);
         // no audio file... just bail
         if (!buffer) {
+            console.log('why no buffer?');
             return;
         }
         const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});

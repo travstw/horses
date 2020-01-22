@@ -20,7 +20,6 @@ class SystemBuilder {
         this.impulseService = new ImpulseService(this.context, this.mediaService);
         this.settingsService = new SettingsService();
         await this.settingsService.fetchSettings();
-
         this.stereoBus = new StereoBus(this.context, this.impulseService, this.settingsService);
         this.composer = new Composer(this.context, this.stereoBus, this.impulseService, this.settingsService, this.mediaService);
         this.addEventListener();
