@@ -67,8 +67,9 @@
             <a class="modal-close">X</a>
             <div class="modal-content-container" id="settings-content">
                 <div class="settings-item">
-                    <label class="settings-label" for="song-length">Length: </label>
-                    <select id="song-length" class="settings-select" value=4>
+                    <label class="settings-label" for="settings-song-length">Length: </label>
+                    <select id="settings-song-length" class="settings-select" value=4>
+                        <option class="settings-option" value=2>2</option>
                         <option class="settings-option" value=3>3</option>
                         <option class="settings-option" value=4>4</option>
                         <option class="settings-option" value=5>5</option>
@@ -81,53 +82,87 @@
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="envelope">Envelope: </label>
-                    <select id="envelope" class="settings-select" value="linear">
+                    <label class="settings-label" for="settings-mode">Mode: </label>
+                    <select id="settings-mode" class="settings-select" value="structured">
+                        <option class="settings-option" value="structured">Structured</option>
+                        <option class="settings-option" value="free">Free</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-tracks">Tracks: </label>
+                    <select id="settings-tracks" class="settings-select" value="all">
+                        <option class="settings-option" value="all">All</option>
+                        <option class="settings-option" value="vocals">Vocals</option>
+                        <option class="settings-option" value="instrument">Instruments</option>
+                        <option class="settings-option" value="ambient">Ambient</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-envelope">Envelope: </label>
+                    <select id="settings-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
                         <option class="settings-option" value="Exponential">Exponential</option>
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="envelope-coeff">Envelope Depth: </label>
+                    <label class="settings-label" for="settings-envelope-coeff">Envelope Depth: </label>
                     <!-- <div class="settings-range-items"> -->
-                    <input class="settings-range" id="envelope-coeff" name="envelope-coeff" type="range" min="0" max="10" step="1">
+                    <input class="settings-range" id="settings-envelope-coeff" name="envelope-coeff" type="range" min="0" max="10" step="1">
                     <!-- <div class="settings-range-value" id="envelope-coeff_value"></div>
                     </div> -->
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="drift-envelope">Drift Envelope: </label>
-                    <select id="drift-envelope" class="settings-select" value="linear">
+                    <label class="settings-label" for="settings-drift-envelope">Drift Envelope: </label>
+                    <select id="settings-drift-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
                         <option class="settings-option" value="exponential">Exponential</option>
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="drift-type">Drift Type: </label>
-                    <select id="drift-type" class="settings-select" value="quantized">
+                    <label class="settings-label" for="settings-drift-type">Drift Type: </label>
+                    <select id="settings-drift-type" class="settings-select" value="quantized">
                         <option class="settings-option" value="quantized">Quantized</option>
                         <option class="settings-option" value="free">Free</option>
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="drift-coeff">Drift Depth: </label>
-                    <input class="settings-range" id="drift-coeff" type="range" min="0" max="10" step="1">
+                    <label class="settings-label" for="settings-drift-coeff">Drift Depth: </label>
+                    <input class="settings-range" id="settings-drift-coeff" type="range" min="0" max="10" step="1">
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="decay-envelope">Decay Envelope: </label>
-                    <select id="decay-envelope" class="settings-select" value="linear">
+                    <label class="settings-label" for="settings-decay-envelope">Decay Envelope: </label>
+                    <select id="settings-decay-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
                         <option class="settings-option" value="exponential">Exponential</option>
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="decay-coeff">Decay Depth: </label>
-                    <input class="settings-range" id="decay-coeff" type="range" min="0" max="10" step="1">
+                    <label class="settings-label" for="settings-decay-coeff">Decay Depth: </label>
+                    <input class="settings-range" id="settings-decay-coeff" type="range" min="0" max="10" step="1">
                 </div>
-                <a id="settings-submit">&#9737; Apply</a>
-                <div id="settings-message">&#936; Settings Applied &#936;</div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-reverb-type">Reverb Type: </label>
+                    <select id="settings-reverb-type" class="settings-select">
+
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-reverb-level">Reverb Level: </label>
+                    <input class="settings-range" id="settings-reverb-level" type="range" min="0" max="10" step="1">
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-master-level">Master Level: </label>
+                    <input class="settings-range" id="settings-master-level" type="range" min="0" max="10" step="1">
+                </div>
+
+                <div class="settings-apply-container">
+                    <!-- <a id="settings-submit">&#9737; Apply</a> -->
+                    <div id="settings-message">&#936; Settings Applied &#936;</div>
+                </div>
+
 
             </div>
         </div>

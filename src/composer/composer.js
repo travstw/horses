@@ -3,11 +3,10 @@ import { Logger } from '../logger';
 import { getRandomInteger } from '../utils';
 import { AutomationService } from './services/automation-service';
 import { Scheduler } from './services/scheduler-service';
-import { StereoBus } from '../engine/stereo-bus';
 import { NodeFactory } from '../engine/node-factory';
 import { Channel } from '../engine/channel';
 export class Composer {
-    constructor(context, stereoBus, settingsService, mediaService) {
+    constructor(context, stereoBus, impulseService, settingsService, mediaService) {
         this.context = context;
         this.channels = [];
         this.logger = new Logger();
@@ -16,30 +15,41 @@ export class Composer {
         this.playEvent$ = new Subject();
         this.currentPlaying$ = new BehaviorSubject([]);
         this.mediaService = mediaService;
+        this.settingsService = settingsService;
+        this.impulseService = impulseService;
         this.stereoBus = stereoBus;
 
-        settingsService.settings$.subscribe((settings) => {
+        this.settingsService.settings$.subscribe((settings) => {
             this.settings = settings;
-            console.log(this.settings);
         });
     }
 
     async init() {
-        this.logger.log('Priming the horses...');
         this.secondsPerMeasure = (60.0 / this.settings.song.bpm) * 4;
         this.mediaService.setTracks(this.settings.tracks);
         this.scheduler = new Scheduler(this.settings.song.numSchedulers, this.scheduleEvent$, ...this.settings.song.schedulerRange);
         this.scheduleEvent$.subscribe(() => this.onScheduleEvent());
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
-        await this.loadStaticTracks();
+
+        this.envelope = NodeFactory.createNode('gain', { context: this.context});
+        this.stereoBus.connect(this.envelope.node);
+        AutomationService.setValueAtTime(this.envelope, 'gain', 0.0, 0);
+        AutomationService.linearRampToValueAtTime(this.envelope, 'gain', 1.0, this.context.currentTime + this.settings.song.length);
+
+        if (this.settings.song.mode === 'structured') {
+            await this.loadStaticTracks();
+        }
+
     }
 
     start() {
         // delay start of randomized tracks to let intro play... doesn't have to be perfect.
         // can also limit what tracks will play in the beginning using the envelope
+        // start immediately if in free mode...
+        const duration = this.settings.song.mode === 'free' ? 0 : 15000;
         setTimeout(() => {
-            this.scheduler.start();
-        }, 15000);
+            this.scheduler.start(duration ? undefined : true);
+        }, duration);
 
     }
 
@@ -79,13 +89,39 @@ export class Composer {
     }
 
     async onScheduleEvent() {
-        this.logger.log('Schedule Event Fired');
-        const tracks = this.mediaService.getFilteredTrackList((track) => !track.static);
+        const tracks = this.mediaService.getFilteredTrackList((track) => {
+            let types;
+            let subtypes = ['main', 'ambient'];
+
+            if (this.settings.song.tracks === 'vocals') {
+                types = ['vocals', 'nature'];
+            } else if (['instrumental', 'ambient'].includes(this.settings.song.tracks)) {
+                types = ['instrumental', 'nature'];
+                if (this.settings.song.tracks === 'ambient') {
+                    subtypes = ['ambient'];
+                }
+            } else {
+                types = ['vocals', 'instrument', 'nature'];
+            }
+
+            const include = (this.settings.song.mode === 'free');
+            // console.log(types, include);
+
+            return (track.static === include)
+                && (this.envelope.value > track.playThreshold)
+                && types.includes(track.type)
+                && subtypes.includes(track.subtype);
+        });
+
+        // no tracks match play criteria... bail
+        if (!tracks.length) {
+            return;
+        }
+
         const index = getRandomInteger(0, tracks.length - 1);
         const name = tracks[index].title;
 
-        this.logger.log(`Loading Track '${tracks[index].title}'`);
-
+        console.log(name, tracks);
         const buffer = await this.getBuffer(index);
 
         // no audio file... just bail

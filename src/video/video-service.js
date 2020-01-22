@@ -19,12 +19,12 @@ export class VideoService {
         } catch (e) {
             console.error('Video could not play', e);
         }
-        console.log('new video');
+        // console.log('new video');
 
         setTimeout(() => {
             video.style.opacity = 0;
             setTimeout(() => {
-                console.log('remove');
+                // console.log('remove');
                 this.container.removeChild(video);
             }, 2000);
 

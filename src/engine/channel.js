@@ -35,7 +35,7 @@ export class Channel {
             if (ready) {
                 this.patchSignalChain();
                 this.automationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
-                const startTime = this.calculateStartOffset(this.startMeasureOffset, this.drift);
+                const startTime = this.calculateStartOffset(this.startMeasureOffset);
 
                 this.start(startTime);
                 this.automationService.exponentialRampToValueAtTime(this.output, 'gain', 1.0, startTime + this.drift + this.fadeIn);
@@ -59,7 +59,7 @@ export class Channel {
         });
     }
 
-    calculateStartOffset(offset = 1, drift = 0) {
+    calculateStartOffset(offset = 1) {
 
         let startOffset;
         if (offset) {

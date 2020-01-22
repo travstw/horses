@@ -1,5 +1,6 @@
 import { NodeFactory } from './node-factory';
 import { AutomationService } from '../composer/services/automation-service';
+import { ImpulseService } from '../composer/services/impulse-service';
 export class StereoBus {
     // context;
     // input;
@@ -9,26 +10,36 @@ export class StereoBus {
     /**
      * @param {context} opts
      */
-    constructor(opts) {
-        this.context = opts.context;
-        this.settingsService = opts.settingsService;
+    constructor(context, impulseService, settingsService, nodes = []) {
+        this.context = context;
+        this.impulseService = impulseService;
+        this.settingsService = settingsService;
         this.settings;
         this.input = NodeFactory.createNode('gain', { context: this.context});
         this.output = NodeFactory.createNode('gain', { context: this.context});
-        this.reverb = opts.reverb;
         this.reverbReturnLevel = NodeFactory.createNode('gain', { context: this.context});
-        this.nodes = [this.input, ...opts.nodes || [], this.output];
+        this.nodes = [this.input, ...nodes, this.output];
 
         this.patchSignalChain();
+        this.setReverb();
 
         this.settingsService.settings$.subscribe(settings => {
             this.settings = settings
             if (this.settings) {
-                const outputLevel = this.settings.song.outputLevel;
-                this.setOutputLevel(outputLevel);
-
-                const reverbLevel = this.settings.song.outputReverbLevel;
-                this.setReverbReturnLevel(outputLevel);
+                console.log(this.settings.changed);
+                // TODO only apply settings if they actually changed...
+                switch (this.settings.changed) {
+                    case 'outputLevel':
+                        const outputLevel = this.settings.song.outputLevel / 10;
+                        this.setOutputLevel(outputLevel);
+                        break;
+                    case 'outputReverbLevel':
+                        const reverbLevel = this.settings.song.outputReverbLevel / 10;
+                        this.setReverbReturnLevel(reverbLevel);
+                        break;
+                    case 'selectedReverb':
+                        this.setReverb(this.settings.song.selectedReverb);
+                }
             }
         });
 
@@ -41,10 +52,6 @@ export class StereoBus {
             }
             this.nodes[i - 1].connect(this.nodes[i].node);
         }
-
-        this.input.connect(this.reverb.node);
-        this.reverb.connect(this.reverbReturnLevel.node);
-        this.reverbReturnLevel.connect(this.output.node);
 
         this.connectDestination();
     }
@@ -61,14 +68,43 @@ export class StereoBus {
         node.disconnect(this.input.node);
     }
 
+    async setReverb() {
+        const impulse = this.settingsService.getSetting((settings) => {
+            return settings['impulses'].find((i) => i.title === settings.song.selectedReverb);
+        });
+
+        if (!impulse) {
+            return;
+        }
+
+        const reverb = await this.impulseService.getImpulse(impulse.filename);
+        // fade out reverb before replacing it to avoid clicks
+        this.setReverbReturnLevel(0.0, 0.1);
+        const oldReverb = this.reverb;
+        this.reverb = reverb;
+        const level = this.settings.song.outputReverbLevel;
+        this.setReverbReturnLevel(level, 0.5)
+        this.input.connect(this.reverb.node);
+        this.reverb.connect(this.reverbReturnLevel.node);
+        this.reverbReturnLevel.connect(this.output.node);
+
+        // disconnect old reverb node if it exists;
+        if (oldReverb) {
+            this.input.disconnect(oldReverb.node);
+            oldReverb.disconnect(this.reverbReturnLevel.node);
+        }
+
+
+    }
+
     // defaults to .25 seconds so reverb can be adjusted without 'clicks' by user
-    setReverbReturnLevel(level, time = 0.25) {
+    setReverbReturnLevel(level, time = 0.5) {
         const valueTime = this.context.currentTime + time;
         AutomationService.exponentialRampToValueAtTime(this.reverbReturnLevel, 'gain', level, valueTime);
     }
 
-    // defaults to .25 seconds so reverb can be adjusted without 'clicks' by user
-    setOutputLevel(level, time = 0.25) {
+    // defaults to .25 seconds so level can be adjusted without 'clicks' by user
+    setOutputLevel(level, time = 0.5) {
         const valueTime = this.context.currentTime + time;
         AutomationService.exponentialRampToValueAtTime(this.output, 'gain', level, valueTime);
 

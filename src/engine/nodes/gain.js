@@ -8,8 +8,8 @@ export class Gain {
         this.node = this.context.createGain();
     }
 
-    get gain() {
-        return this.node.gain;
+    get value() {
+        return this.node.gain.value;
     }
 
     connect(output) {

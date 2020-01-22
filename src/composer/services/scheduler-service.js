@@ -15,8 +15,8 @@ export class Scheduler {
         this.timers = [];
     }
 
-    schedule() {
-        const duration = getRandomInteger(this.min, this.max);
+    schedule(immediate) {
+        const duration = immediate ? 0 : getRandomInteger(this.min, this.max);
         const timer = setTimeout(() => {
             this.scheduleEvent$.next(true);
             this.timers = this.timers.reduce((timers, t) => {
@@ -31,11 +31,11 @@ export class Scheduler {
         this.timers.push(timer);
     }
 
-    start() {
+    start(immediate) {
         console.log('scheduler started');
         this.active = true;
         for (let i = 0; i < this.numTimers; i++) {
-            this.schedule();
+            this.schedule(immediate);
         }
     }
 
