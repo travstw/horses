@@ -33,12 +33,12 @@ export class SettingsService {
     update(settings) {
         this.settings = settings;
         this.publish();
+        this.showMessage();
     }
 
     publish() {
         this.settings$.next(this.settings);
     }
-
 
     initDom() {
 
@@ -203,6 +203,6 @@ export class SettingsService {
         messageContainer.style.opacity = '1';
         setTimeout(() => {
             messageContainer.style.opacity = '0';
-        }, 3000);
+        }, 2000);
     }
 }
