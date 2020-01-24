@@ -120,6 +120,7 @@ export class Composer {
         this.channels.forEach(c => c.stop(0));
         this.scheduler.stop();
         this.channels = [];
+        clearTimeout(this.suicideTimer);
         this.songEnded$.next(true);
     }
 

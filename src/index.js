@@ -69,7 +69,7 @@ class SystemBuilder {
     animateStartButton(playing) {
         if (playing) {
             this.startButton.style.opacity = 0.5;
-            this.startButton.style.top = '93%'
+            this.startButton.style.top = '92%'
             this.startButton.innerText = 'REST';
             return;
         }
@@ -82,7 +82,7 @@ class SystemBuilder {
     animateTitle(playing) {
         if (playing) {
             this.title.style.opacity = 0.5;
-            this.title.style.top = '6%';
+            this.title.style.top = '7.5%';
             return;
         }
 

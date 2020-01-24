@@ -77,11 +77,8 @@ export class ModalService {
                 e.stopPropagation()
 
                 this.clearModals();
+                this.modalBG.style.display = 'none';
                 this.toggleHamburgerMenu();
-                // this.modalBG.style.display = 'none';
-                // this.hamburgerMenu.style.opacity = 0;
-                // this.hamburgerMenu.style.pointerEvents = 'none';
-                // this.hamburgerOpen = false;
             });
         }
 

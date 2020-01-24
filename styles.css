@@ -95,13 +95,14 @@ select {
 }
 
 .hamburger-icon {
-    position: absolute;
+    /* position: absolute; */
+    align-self: flex-end;
     display: flex;
     flex-direction: column;
     align-items: center;
     /* justify-content: space-around; */
-    top: 3%;
-    right: 3%;
+    /* top: 3%;
+    right: 3%; */
     width: 50px;
     height: 50px;
     border-radius: 5px;
@@ -116,8 +117,8 @@ select {
 
 .hamburger-icon:hover {
     cursor: pointer;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     /* background-color: rgba(184, 149, 114, .8); */
 }
 
@@ -131,16 +132,23 @@ select {
     /* margin-bottom: 5px; */
 }
 
-.hamburger-menu {
+.hamburger-menu-container {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    top: 5%;
+    right: 3%;
+    z-index: 10;
+}
+
+.hamburger-menu {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     padding: 10px;
     padding-top: 15px;
     border-radius: 8px;
-    top: 9%;
-    right: 3%;
     font-size: 1.4em;
     z-index: 10;
     opacity: 0;
