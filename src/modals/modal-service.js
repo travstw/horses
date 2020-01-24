@@ -25,6 +25,9 @@ export class ModalService {
                 this.hamburger.style.width = '50px';
             }, 100);
             this.toggleHamburgerMenu();
+            if (!this.hamburgerOpen) {
+                this.clearModals();
+            }
         });
 
         this.about.addEventListener('click', (e) => {
@@ -78,11 +81,6 @@ export class ModalService {
     }
 
     toggleHamburgerMenu() {
-        // if (e) {
-        //     e.stopPropagation();
-        // }
-
-        // console.log('burger');
         if (!this.hamburgerOpen) {
             this.hamburgerMenu.style.opacity = .75;
             this.hamburgerMenu.style.pointerEvents = 'auto';
