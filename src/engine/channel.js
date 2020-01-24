@@ -3,16 +3,7 @@ import { AutomationService } from '../composer/services/automation-service';
 import { NodeFactory } from './node-factory';
 
 export class Channel {
-    // context;
-    // audio;
-    // nodes = [];
-    // output;
-    // name;
-    // analyser;
 
-    /**
-     * @param {context, audio, nodes, name} opts
-     */
     constructor(opts) {
         this.id = uuid();
         this.context = opts.context;
@@ -38,7 +29,7 @@ export class Channel {
                 AutomationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
                 const startTime = this.calculateStartOffset();
 
-                console.log(this.name, startTime, this.context.currentTime);
+                // console.log(this.name, startTime, this.context.currentTime);
 
                 this.start(startTime + this.drift);
                 AutomationService.linearRampToValueAtTime(this.output, 'gain', 0.75, startTime + this.drift + this.fadeIn);

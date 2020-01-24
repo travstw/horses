@@ -12,8 +12,10 @@ export class Composer {
         this.context = context;
         this.channels = [];
         this.logger = new Logger();
+        this.suicideTimer;
         this.scheduleEvent$ = new Subject();
         this.endedEvent$ = new Subject();
+        this.songEnded$ = new Subject();
         this.playEvent$ = new Subject();
         this.currentPlaying$ = new BehaviorSubject([]);
         this.mediaService = mediaService;
@@ -38,6 +40,8 @@ export class Composer {
         this.scheduler = new Scheduler(this.settings.song.schedulers, this.scheduleEvent$, this.settingsService.settings$);
         this.scheduleEvent$.subscribe((event) => this.onScheduleEvent(event));
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
+        AutomationService.cancelScheduledValues(this.stereoBus.output, 'gain', 0);
+        this.stereoBus.output.value = 1;
 
         // set fade out if song has a defined length...
         if (this.settings.song.length) {
@@ -57,7 +61,7 @@ export class Composer {
         this.stereoBus.connect(this.driftEnvelope.node);
         this.updateEnvelope(this.driftEnvelope, this.settings.song.driftEnvelope);
 
-
+        this.setSuicideTimer();
 
         await this.loadStaticTracks();
     }
@@ -68,6 +72,7 @@ export class Composer {
             switch(this.settings.changed.field) {
                 case 'length':
                     this.updateStereoBusFadeOut();
+                    this.setSuicideTimer(); // update timer
                     // have to update all envelopes when length changes
                     this.updateEnvelope(this.envelope, this.settings.song.envelope);
                     this.updateEnvelope(this.driftEnvelope, this.settings.song.driftEnvelope);
@@ -80,7 +85,6 @@ export class Composer {
                     break;
                 case 'mode':
                     if (this.settings.song.mode === 'free') {
-                        console.log('here');
                         this.killChannelsByQuery((channel) => {
                             return !!channel.trackMetadata.static;
                         });
@@ -90,7 +94,7 @@ export class Composer {
                     break;
                 case 'tracks':
                     const trackTypes = this.settings.song.tracks;
-                    console.log('type', trackTypes);
+                    // console.log('type', trackTypes);
                     const types = trackTypes === 'all' ? ['vocals', 'instrument', 'ambient'] : trackTypes.split('-');
 
                     this.killChannelsByQuery((channel) => {
@@ -110,6 +114,34 @@ export class Composer {
             this.scheduler.start(!!duration);
         }, duration);
 
+    }
+
+    stop() {
+        this.channels.forEach(c => c.stop(0));
+        this.scheduler.stop();
+        this.channels = [];
+        this.songEnded$.next(true);
+    }
+
+    setSuicideTimer() {
+        if (this.suicideTimer) {
+            clearTimeout(this.suicideTimer);
+        }
+
+        // add 10 seconds to allow the fade
+        const length = this.settings.song.length;
+        // set to infinite... stay alive
+        if (!length) {
+            return;
+        }
+
+        this.suicideTimer = setTimeout(() => {
+            this.stop();
+        }, (length + 15) * 1000);
+    }
+
+    ended() {
+        return this.songEnded$;
     }
 
     async loadStaticTracks() {
@@ -168,7 +200,6 @@ export class Composer {
 
         // no tracks match play criteria... bail
         if (!tracks.length) {
-            console.log('why no tracks?', this.envelope.value);
             return;
         }
 
@@ -186,7 +217,6 @@ export class Composer {
         const { fadeIn, fadeOut} = this.getFadeTimes();
         const duration = this.getDuration();
         const drift = this.getTheDrift(track);
-        console.log('drift:', drift);
 
         const channelOptions = {
             context: this.context,
@@ -220,12 +250,6 @@ export class Composer {
         const channel = new Channel(options);
         this.channels.push(channel);
         this.stereoBus.connect(channel.output.node);
-    }
-
-    stopAll() {
-        this.channels.forEach(c => c.stop(0));
-        this.scheduler.stop();
-        this.channels = [];
     }
 
     onEndedEvent(id) {
@@ -292,14 +316,14 @@ export class Composer {
         this.stereoBus.setFadeOut(newFadeOutTime, DEFAULT_FADEOUT_LENGTH);
     }
 
-    killChannelsByQuery(query) {
+    killChannelsByQuery(query, time = 10) {
         this.channels
             .filter(query)
             .forEach(fc => {
                 AutomationService.cancelScheduledValues(fc.output, 'gain', 0);
-                AutomationService.exponentialRampToValueAtTime(fc.output, 'gain', 0, this.context.currentTime + 10);
-                console.log(fc.trackMetadata);
-                fc.stop(this.context.currentTime + 11);
+                AutomationService.exponentialRampToValueAtTime(fc.output, 'gain', 0, this.context.currentTime + time);
+
+                fc.stop(this.context.currentTime + time);
             });
     }
 
@@ -317,7 +341,7 @@ export class Composer {
     getTheDrift(track) {
 
         // currently, flat sets the evenlope value to 1 and stays there.
-        // if flat get smarter, an update to this will be a TODO
+        // if flat gets smarter, an update to this will be a TODO
         if (this.settings.song.driftEnvelope === 'flat' || !track.drift) {
             return 0;
         }

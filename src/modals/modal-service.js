@@ -7,12 +7,21 @@ export class ModalService {
         this.aboutModal = document.getElementById('about-modal');
         this.settingsModal = document.getElementById('settings-modal');
         this.modalClose = document.getElementsByClassName('modal-close');
-
+        this.hamburger = document.getElementById('hamburger');
+        this.hamburgerMenu = document.getElementById('ham-menu');
+        this.hamburgerOpen = false;
         this.addListeners();
     }
 
     addListeners() {
-        this.about.addEventListener('click', () => {
+
+        this.hamburger.addEventListener('click', (e) => {
+            this.toggleHamburgerMenu();
+        });
+
+        this.about.addEventListener('click', (e) => {
+            event.stopPropagation()
+
             this.clearModals();
 
             this.aboutModal.style.opacity = 1;
@@ -20,7 +29,9 @@ export class ModalService {
             this.modalBG.style.display = 'block';
         });
 
-        this.settings.addEventListener('click', () => {
+        this.settings.addEventListener('click', (e) => {
+            event.stopPropagation()
+
             this.clearModals();
 
             this.settingsModal.style.opacity = 1;
@@ -28,15 +39,23 @@ export class ModalService {
             this.modalBG.style.display = 'block';
         });
 
-        this.modalBG.addEventListener('click', () => {
+        this.modalBG.addEventListener('click', (e) => {
+            event.stopPropagation()
+
             this.clearModals();
             this.modalBG.style.display = 'none';
+            this.toggleHamburgerMenu()
         });
 
         for (let item of this.modalClose) {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
+                event.stopPropagation()
+
                 this.clearModals();
                 this.modalBG.style.display = 'none';
+                this.hamburgerMenu.style.opacity = 0;
+                this.hamburgerMenu.style.pointerEvents = 'none';
+                this.hamburgerOpen = false;
             });
         }
     }
@@ -48,5 +67,26 @@ export class ModalService {
             item.style.pointerEvents = 'none';
             item.style.opacity = 0;
         }
+    }
+
+    toggleHamburgerMenu() {
+        // if (e) {
+        //     e.stopPropagation();
+        // }
+
+        // console.log('burger');
+        if (!this.hamburgerOpen) {
+            this.hamburgerMenu.style.opacity = .75;
+            this.hamburgerMenu.style.pointerEvents = 'auto';
+            this.hamburgerOpen = true;
+            // document.addEventListener('click', this.toggleHamburgerMenu.bind(this))
+
+        } else {
+            // document.removeEventListener('click', this.toggleHamburgerMenu.bind(this));
+            this.hamburgerMenu.style.opacity = 0;
+            this.hamburgerMenu.style.pointerEvents = 'none';
+            this.hamburgerOpen = false;
+        }
+
     }
 }

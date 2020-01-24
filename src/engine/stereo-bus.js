@@ -96,13 +96,13 @@ export class StereoBus {
 
     }
 
-    // defaults to .25 seconds so reverb can be adjusted without 'clicks' by user
+    // defaults to .5 seconds so reverb can be adjusted without 'clicks' by user
     setReverbReturnLevel(level, time = 0.5) {
         const valueTime = this.context.currentTime + time;
         AutomationService.exponentialRampToValueAtTime(this.reverbReturnLevel, 'gain', level, valueTime);
     }
 
-    // defaults to .25 seconds so level can be adjusted without 'clicks' by user
+    // defaults to .5 seconds so level can be adjusted without 'clicks' by user
     setOutputLevel(level, time = 0.5) {
         const valueTime = this.context.currentTime + time;
         AutomationService.exponentialRampToValueAtTime(this.output, 'gain', level, valueTime);
