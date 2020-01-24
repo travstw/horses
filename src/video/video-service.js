@@ -20,6 +20,10 @@ export class VideoService {
         try {
             await video.play();
             video.style.opacity = .85;
+            // setTimeout(() => {
+            //     video.style.opacity = .85;
+            // }, 1000);
+
         } catch (e) {
             console.error('Video could not play', e);
         }

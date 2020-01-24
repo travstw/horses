@@ -14,24 +14,38 @@ export class ModalService {
     }
 
     addListeners() {
+        document.addEventListener("click", (e) => {
+            let targetElement = e.target; // clicked element
 
-        this.hamburger.addEventListener('click', (e) => {
-            this.hamburger.style.backgroundColor = 'rgba(207, 184, 161, .3)'
-            this.hamburger.style.height = '55px';
-            this.hamburger.style.width = '55px';
-            setTimeout(() => {
-                this.hamburger.style.backgroundColor = 'transparent';
-                this.hamburger.style.height = '50px';
-                this.hamburger.style.width = '50px';
-            }, 100);
+            do {
+                if (targetElement === this.hamburgerMenu
+                    || targetElement === this.hamburger
+                    || !this.hamburgerOpen) {
+                    return;
+                }
+
+                targetElement = targetElement.parentNode;
+            } while (targetElement);
+
+            this.toggleHamburgerMenu();
+        });
+
+        this.hamburger.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
             this.toggleHamburgerMenu();
             if (!this.hamburgerOpen) {
                 this.clearModals();
             }
         });
 
+        // this.hamburger.addEventListener('mouseup', (e) => {
+        //     this.hamburger.style.backgroundColor = 'transparent';
+        //     this.hamburger.style.height = '50px';
+        //     this.hamburger.style.width = '50px';
+        // });
+
         this.about.addEventListener('click', (e) => {
-            event.stopPropagation()
+            e.stopPropagation()
 
             this.clearModals();
 
@@ -41,7 +55,7 @@ export class ModalService {
         });
 
         this.settings.addEventListener('click', (e) => {
-            event.stopPropagation()
+            e.stopPropagation()
 
             this.clearModals();
 
@@ -51,7 +65,7 @@ export class ModalService {
         });
 
         this.modalBG.addEventListener('click', (e) => {
-            event.stopPropagation()
+            e.stopPropagation()
 
             this.clearModals();
             this.modalBG.style.display = 'none';
@@ -60,13 +74,20 @@ export class ModalService {
 
         for (let item of this.modalClose) {
             item.addEventListener('click', (e) => {
-                event.stopPropagation()
+                e.stopPropagation()
 
                 this.clearModals();
-                this.modalBG.style.display = 'none';
-                this.hamburgerMenu.style.opacity = 0;
-                this.hamburgerMenu.style.pointerEvents = 'none';
-                this.hamburgerOpen = false;
+                this.toggleHamburgerMenu();
+                // this.modalBG.style.display = 'none';
+                // this.hamburgerMenu.style.opacity = 0;
+                // this.hamburgerMenu.style.pointerEvents = 'none';
+                // this.hamburgerOpen = false;
+            });
+        }
+
+        for (let item of this.modals) {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
         }
     }
@@ -82,6 +103,9 @@ export class ModalService {
 
     toggleHamburgerMenu() {
         if (!this.hamburgerOpen) {
+            this.hamburger.style.backgroundColor = 'rgba(207, 184, 161, .3)'
+            this.hamburger.style.height = '55px';
+            this.hamburger.style.width = '55px';
             this.hamburgerMenu.style.opacity = .75;
             this.hamburgerMenu.style.pointerEvents = 'auto';
             this.hamburgerOpen = true;
@@ -92,6 +116,9 @@ export class ModalService {
             this.hamburgerMenu.style.opacity = 0;
             this.hamburgerMenu.style.pointerEvents = 'none';
             this.hamburgerOpen = false;
+            this.hamburger.style.backgroundColor = 'transparent';
+            this.hamburger.style.height = '50px';
+            this.hamburger.style.width = '50px';
         }
 
     }

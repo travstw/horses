@@ -34,7 +34,9 @@ class SystemBuilder {
 
     addEventListener() {
 
-        this.startButton.addEventListener('click', () => {
+        this.startButton.addEventListener('click', (e) => {
+            e.stopPropagation()
+
             if (this.playing) {
                 this.stop();
             } else {

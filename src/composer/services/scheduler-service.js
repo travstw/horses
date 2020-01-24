@@ -51,6 +51,7 @@ export class Scheduler {
     }
 
     stop() {
+        console.log('scheduler started');
         this.timers.forEach((t) => clearTimeout(t));
         this.timers = [];
         this.active = false;

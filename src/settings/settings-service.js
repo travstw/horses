@@ -93,6 +93,8 @@ export class SettingsService {
         // const apply = document.getElementById('settings-submit');
 
         length.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.length = +e.target.value * 60;
             settings.changed = { field: 'length', title: 'Length' };
@@ -100,6 +102,8 @@ export class SettingsService {
         });
 
         density.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.density = +e.target.value;
             settings.changed = { field: 'density', title: 'Density' };
@@ -107,6 +111,8 @@ export class SettingsService {
         });
 
         mode.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.mode = e.target.value;
             settings.changed = { field: 'mode', title: 'Mode' };
@@ -114,6 +120,8 @@ export class SettingsService {
         });
 
         tracks.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.tracks = e.target.value;
             settings.changed = { field: 'tracks', title: 'Tracks' };
@@ -121,6 +129,8 @@ export class SettingsService {
         });
 
         envelope.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.envelope = e.target.value;
             settings.changed = { field: 'envelope', title: 'Envelope' };
@@ -135,6 +145,8 @@ export class SettingsService {
         // });
 
         driftEnvelope.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.driftEnvelope = e.target.value;
             settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' };
@@ -143,6 +155,8 @@ export class SettingsService {
         });
 
         driftType.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.driftType = e.target.value;
             settings.changed = { field: 'driftType', title: 'Drift Type' };
@@ -151,6 +165,8 @@ export class SettingsService {
         });
 
         driftCoEff.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.driftCoEff = +e.target.value;
             settings.changed = { field: 'driftCoEff', title: 'Drift Depth' };
@@ -173,6 +189,8 @@ export class SettingsService {
         // });
 
         reverbSelect.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             const impulse = settings.impulses.find(i => i.title === e.target.value);
             settings.song.selectedReverb = impulse.title;
@@ -181,6 +199,8 @@ export class SettingsService {
         });
 
         reverbLevel.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.outputReverbLevel = +e.target.value;
             settings.changed = { field: 'outputReverbLevel', title: 'Reverb Level' };
@@ -188,6 +208,8 @@ export class SettingsService {
         });
 
         masterLevel.addEventListener('change', (e) => {
+            e.stopPropagation();
+
             const settings = {...this.settings};
             settings.song.outputLevel = +e.target.value;
             settings.changed = { field: 'outputLevel', title: 'Master Level' };
