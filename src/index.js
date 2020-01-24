@@ -72,7 +72,7 @@ class SystemBuilder {
             return;
         }
         this.startButton.style.opacity = .75;
-        this.startButton.style.top = '70%'
+        this.startButton.style.top = '80%'
         this.startButton.innerText = 'RIDE';
 
     }

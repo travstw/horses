@@ -104,14 +104,14 @@ select {
     right: 3%;
     width: 50px;
     height: 50px;
-    border-radius: 15px;
+    border-radius: 5px;
     /* background-color:  rgba(207, 184, 161, .2); */
     background-color: transparent;
     opacity: .50;
     z-index: 10;
     padding-top: 5px;
     padding-bottom: 5px;
-    transition: padding .3s ease;
+    transition: padding .3s ease, height .2s, width .2s;
 }
 
 .hamburger-icon:hover {
@@ -283,7 +283,7 @@ select {
 #start {
     position: absolute;
     transform: translate(-50%, -50%);
-    top: 85%;
+    top: 80%;
     left: 50%;
     height: 50px;
     width: 200px;

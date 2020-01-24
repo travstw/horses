@@ -16,6 +16,14 @@ export class ModalService {
     addListeners() {
 
         this.hamburger.addEventListener('click', (e) => {
+            this.hamburger.style.backgroundColor = 'rgba(207, 184, 161, .3)'
+            this.hamburger.style.height = '55px';
+            this.hamburger.style.width = '55px';
+            setTimeout(() => {
+                this.hamburger.style.backgroundColor = 'transparent';
+                this.hamburger.style.height = '50px';
+                this.hamburger.style.width = '50px';
+            }, 100);
             this.toggleHamburgerMenu();
         });
 
