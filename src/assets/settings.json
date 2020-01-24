@@ -1,177 +1,377 @@
 {
     "song": {
         "title": "All The Tired Horses",
-        "length": 180,
+        "length": 0,
         "tracks": "all",
-        "mode": "structured",
+        "mode": "free",
         "bpm": 100,
-        "numSchedulers": 2,
-        "schedulerRange": [10000, 30000],
+        "density": 2,
+        "schedulers": [
+            {
+                "event": "vocals",
+                "range": [10, 30]
+            },
+            {
+                "event": "vocals",
+                "range": [20, 40]
+            },
+            {
+                "event": "instrument",
+                "range": [20, 40]
+            },
+            {
+                "event": "ambient",
+                "range": [10, 30]
+            }
+        ],
+        "trackFadeRange": [10, 20],
+        "trackDurationRange": [30, 60],
         "envelope": "linear",
         "envelopeCoEff": 1,
-        "driftEnvelope" : "exponential",
-        "driftCoEff": 1,
+        "driftEnvelope" : "linear",
+        "driftCoEff": 0,
         "driftType" : "quantized",
         "decayEnvelope" : "linear",
         "decayCoEff": 1,
         "outputLevel": 5,
-        "outputReverbLevel": 5,
+        "outputReverbLevel": 1,
         "selectedReverb": ""
     },
     "impulses": [
         {
-            "filename": "large-ambience.mp3",
-            "title": "Large Ambience",
+            "filename": "large-room.mp3",
+            "title": "Large Room",
             "default": true
         },
         {
-            "filename": "large-room.mp3",
-            "title": "Large Room",
+            "filename": "large-ambience.mp3",
+            "title": "Large Ambience",
+            "default": false
+        },
+        {
+            "filename": "large-church.mp3",
+            "title": "Large Church",
+            "default": false
+        },
+        {
+            "filename": "medium-plate.mp3",
+            "title": "Medium Plate",
+            "default": false
+        },
+        {
+            "filename": "echo-plate.mp3",
+            "title": "Echo Plate",
+            "default": false
+        },
+        {
+            "filename": "surfin.mp3",
+            "title": "Surfin",
+            "default": false
+        },
+        {
+            "filename": "steinman-hall.wav",
+            "title": "Steinman Hall",
+            "default": false
+        },
+        {
+            "filename": "in-the-past.mp3",
+            "title": "In The Past",
+            "default": false
+        },
+        {
+            "filename": "inside-out.mp3",
+            "title": "Inside Out",
+            "default": false
+        },
+        {
+            "filename": "art-gallery.wav",
+            "title": "Art Gallery",
+            "default": false
+        },
+        {
+            "filename": "batcave.wav",
+            "title": "Batcave",
+            "default": false
+        },
+        {
+            "filename": "cedar-creek-winery.wav",
+            "title": "Cedar Creek Winery",
+            "default": false
+        },
+        {
+            "filename": "old-south-bridge.wav",
+            "title": "Old South Bridge",
+            "default": false
+        },
+        {
+            "filename": "salton-sea-pipe.wav",
+            "title": "Salton Sea Pipe",
+            "default": false
+        },
+        {
+            "filename": "tijuana-mall.wav",
+            "title": "Tijuana Mall",
+            "default": false
+        },
+        {
+            "filename": "tunnel-to-hell.wav",
+            "title": "Tunnel To Hell",
             "default": false
         }
+
     ],
     "tracks": [
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "vocals",
+            "subtype": "main",
+            "filename": "main-pair_1.mp3",
+            "title": "main-pair_1",
+            "playThreshold": 0,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "main",
+            "filename": "main-pair_2.mp3",
+            "title": "main-pair_2",
+            "playThreshold": 0,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "main",
+            "filename": "main-pair_3.mp3",
+            "title": "main-pair_3",
+            "playThreshold": 0.2,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "main",
+            "filename": "main-pair_4.mp3",
+            "title": "main-pair_4",
+            "playThreshold": 0.5,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "background_blend.mp3",
+            "title": "background_blend",
+            "playThreshold": 0.1,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "background_blend_2.mp3",
+            "title": "background_blend_2",
+            "playThreshold": 0.3,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "mid-oohs.mp3",
+            "title": "mid-oohs",
+            "playThreshold": 0.2,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "high-oohs.mp3",
+            "title": "high-oohs",
+            "playThreshold": 0.5,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
             "filename": "floating-es.mp3",
             "title": "floating-es",
-            "playThreshold": 0.5
+            "playThreshold": 0.5,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "floating-noodles.mp3",
             "title": "floating-noodles",
-            "playThreshold": 0.6
+            "playThreshold": 0.6,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "reverse-weedle_2.mp3",
             "title": "reverse-weedle_2",
-            "playThreshold": 0.4
+            "playThreshold": 0.4,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "reverse-weedle.mp3",
             "title": "reverse-weedle",
-            "playThreshold": 0.7
+            "playThreshold": 0.7,
+            "lengthInBeats": 16
         },
         {
             "static": true,
             "drift": false,
             "decay": false,
             "type": "nature",
-            "subtype": "ambient",
+            "subtype": "background",
             "filename": "desert-wind.mp3",
             "title": "desert-wind",
             "playThreshold": 0,
-            "startMeasureOffset": 1
+            "startOffset": 0,
+            "lengthInBeats": 16
         },
         {
             "static": false,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "six-chug.mp3",
             "title": "six-chug",
-            "playThreshold": 0.5
+            "playThreshold": 0.5,
+            "lengthInBeats": 16
         },
         {
             "static": true,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "ac_main_chords.mp3",
             "title": "ac_main_chords",
             "playThreshold": 0,
-            "startMeasureOffset": 2
+            "startOffset": 16,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "ac_reverse.mp3",
             "title": "ac_reverse",
-            "playThreshold": 0.2
+            "playThreshold": 0.1,
+            "lengthInBeats": 16
         },
         {
             "static": false,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "banjolele_main_chords.mp3",
             "title": "banjolele_main_chords",
-            "playThreshold": 0.5
+            "playThreshold": 0.5,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "creepy_plinks.mp3",
             "title": "creepy_plinks",
-            "playThreshold": 0.2
+            "playThreshold": 0.0,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "floating_harmonics.mp3",
             "title": "floating_harmonics",
-            "playThreshold": 0.9
+            "playThreshold": 0.1,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "lofi_thump.mp3",
             "title": "lofi_thump",
-            "playThreshold": 0.9
+            "playThreshold": 0.0,
+            "lengthInBeats": 16
         },
         {
             "static": false,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "organ_main_chords.mp3",
             "title": "organ_main_chords",
-            "playThreshold": 0.1
+            "playThreshold": 0.1,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "pickle_clicks.mp3",
             "title": "pickle_clicks",
-            "playThreshold": 0.2
+            "playThreshold": 0.2,
+            "lengthInBeats": 16
         },
         {
             "static": false,
@@ -181,60 +381,66 @@
             "subtype": "main",
             "filename": "reverse_floating_main_chords.mp3",
             "title": "reverse_floating_main_chords",
-            "playThreshold": 0.5
+            "playThreshold": 0.5,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
             "type": "instrument",
-            "subtype": "ambient",
+            "subtype": "main",
             "filename": "shaka_flute.mp3",
             "title": "shaka_flute",
-            "playThreshold": 0.6
+            "playThreshold": 0.6,
+            "lengthInBeats": 16
         },
         {
             "static": true,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "shaker_groove.mp3",
             "title": "shaker_groove",
             "playThreshold": 0,
-            "startMeasureOffset": 3
+            "startOffset": 32,
+            "lengthInBeats": 16
         },
         {
             "static": true,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "tambo.mp3",
             "title": "tambo",
             "playThreshold": 0,
-            "startMeasureOffset": 4
+            "startOffset": 32,
+            "lengthInBeats": 16
         },
         {
             "static": false,
             "drift": true,
             "decay": true,
-            "type": "instrument",
-            "subtype": "ambient",
+            "type": "ambient",
+            "subtype": "background",
             "filename": "trem_ambience.mp3",
             "title": "trem_ambience",
-            "playThreshold": 0.3
+            "playThreshold": 0,
+            "lengthInBeats": 16
         },
         {
             "static": true,
-            "drift": false,
+            "drift": true,
             "decay": true,
             "type": "instrument",
             "subtype": "main",
             "filename": "trem_main_melody.mp3",
             "title": "trem_main_melody",
             "playThreshold": 0,
-            "startMeasureOffset": 5
+            "startOffset": 32,
+            "lengthInBeats": 16
         }
     ]
 }

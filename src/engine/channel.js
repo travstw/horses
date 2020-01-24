@@ -1,4 +1,5 @@
 import * as uuid from 'uuid/v1';
+import { AutomationService } from '../composer/services/automation-service';
 import { NodeFactory } from './node-factory';
 
 export class Channel {
@@ -16,6 +17,7 @@ export class Channel {
         this.id = uuid();
         this.context = opts.context;
         this.logger = opts.logger;
+        this.trackMetadata = opts.trackMetadata;
         this.audio = opts.audio;
         this.name = opts.name;
         this.endedEvent$ = opts.endedEvent$;
@@ -23,8 +25,7 @@ export class Channel {
         this.nodes = [this.audio, ...opts.nodes || [], this.output];
         this.analyser = this.context.createAnalyser();
         this.drift = opts.drift;
-        this.secondsPerMeasure = opts.secondsPerMeasure;
-        this.startMeasureOffset = opts.startMeasureOffset;
+        this.secondsPerBeat = opts.secondsPerBeat;
         this.duration = opts.duration;
         this.fadeIn = opts.fadeIn;
         this.fadeOut = opts.fadeOut;
@@ -34,14 +35,16 @@ export class Channel {
         this.audio.ready().subscribe((ready) => {
             if (ready) {
                 this.patchSignalChain();
-                this.automationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
-                const startTime = this.calculateStartOffset(this.startMeasureOffset);
+                AutomationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
+                const startTime = this.calculateStartOffset();
 
-                this.start(startTime);
-                this.automationService.exponentialRampToValueAtTime(this.output, 'gain', 0.75, startTime + this.drift + this.fadeIn);
+                console.log(this.name, startTime, this.context.currentTime);
+
+                this.start(startTime + this.drift);
+                AutomationService.linearRampToValueAtTime(this.output, 'gain', 0.75, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
-                    this.automationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),
+                    AutomationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),
                         this.fadeOut / 3);
                 }
 
@@ -59,29 +62,21 @@ export class Channel {
         });
     }
 
-    calculateStartOffset(offset = 1) {
-
-        let startOffset;
-        if (offset) {
-            startOffset = (this.secondsPerMeasure * 4.0) * offset;
-        } else {
-            startOffset = (this.secondsPerMeasure * 4.0);
-        }
-
+    calculateStartOffset() {
+        const offset = this.trackMetadata.startOffset || 0;
+        const trackLength = this.trackMetadata.lengthInBeats;
+        let playOffset = (this.secondsPerBeat * trackLength);
         let startTime;
 
         // context has been running for less time than 4 measures
-        if (this.context.currentTime < startOffset) {
-            startTime = startOffset;
+        if (this.context.currentTime < playOffset) {
+            startTime = playOffset +  (offset * this.secondsPerBeat);
         } else {
-            const nextMeasure = Math.floor(this.context.currentTime / startOffset) + 1;
-            startTime = nextMeasure * startOffset;
+            const nextMeasure = Math.floor(this.context.currentTime / (this.secondsPerBeat * trackLength)) + 1;
+            startTime = (nextMeasure * playOffset) + (offset * this.secondsPerBeat);
         }
 
-        // this.logger.log(`Track '${this.name}' scheduled to start in ${startTime.toFixed(4)} seconds`);
-
         return startTime;
-
     }
 
     playing() {}

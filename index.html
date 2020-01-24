@@ -85,8 +85,12 @@
                         <option class="settings-option" value=8>8</option>
                         <option class="settings-option" value=9>9</option>
                         <option class="settings-option" value=10>10</option>
-                        <option class="settings-option" value="infinite">Infinite</option>
+                        <option class="settings-option" value=0>Infinite</option>
                     </select>
+                </div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-density">Density: </label>
+                    <input class="settings-range" id="settings-density" type="range" min="1" max="4" step="1">
                 </div>
                 <div class="settings-item">
                     <label class="settings-label" for="settings-mode">Mode: </label>
@@ -96,11 +100,12 @@
                     </select>
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="settings-tracks">Tracks: </label>
+                    <label class="settings-label" for="settings-tracks">Track Types: </label>
                     <select id="settings-tracks" class="settings-select" value="all">
                         <option class="settings-option" value="all">All</option>
                         <option class="settings-option" value="vocals">Vocals</option>
-                        <option class="settings-option" value="instrument">Instruments</option>
+                        <option class="settings-option" value="vocals-ambient">Vocals + Ambient</option>
+                        <option class="settings-option" value="instrument-ambient">Instruments + Ambient</option>
                         <option class="settings-option" value="ambient">Ambient</option>
                     </select>
                 </div>
@@ -109,22 +114,23 @@
                     <select id="settings-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
-                        <option class="settings-option" value="Exponential">Exponential</option>
+                        <option class="settings-option" value="exponential">Exponential</option>
+                        <option class="settings-option" value="linear-reverse">Linear Reverse</option>
+                        <option class="settings-option" value="exponential-reverse">Exponential Reverse</option>
                     </select>
                 </div>
-                <div class="settings-item">
+                <!-- <div class="settings-item">
                     <label class="settings-label" for="settings-envelope-coeff">Envelope Depth: </label>
-                    <!-- <div class="settings-range-items"> -->
                     <input class="settings-range" id="settings-envelope-coeff" name="envelope-coeff" type="range" min="0" max="10" step="1">
-                    <!-- <div class="settings-range-value" id="envelope-coeff_value"></div>
-                    </div> -->
-                </div>
+                </div> -->
                 <div class="settings-item">
                     <label class="settings-label" for="settings-drift-envelope">Drift Envelope: </label>
                     <select id="settings-drift-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
                         <option class="settings-option" value="exponential">Exponential</option>
+                        <option class="settings-option" value="linear-reverse">Linear Reverse</option>
+                        <option class="settings-option" value="exponential-reverse">Exponential Reverse</option>
                     </select>
                 </div>
                 <div class="settings-item">
@@ -138,18 +144,20 @@
                     <label class="settings-label" for="settings-drift-coeff">Drift Depth: </label>
                     <input class="settings-range" id="settings-drift-coeff" type="range" min="0" max="10" step="1">
                 </div>
-                <div class="settings-item">
+                <!-- <div class="settings-item">
                     <label class="settings-label" for="settings-decay-envelope">Decay Envelope: </label>
                     <select id="settings-decay-envelope" class="settings-select" value="linear">
                         <option class="settings-option" value="flat">Flat</option>
                         <option class="settings-option" value="linear">Linear</option>
                         <option class="settings-option" value="exponential">Exponential</option>
+                        <option class="settings-option" value="linear-reverse">Linear Reverse</option>
+                        <option class="settings-option" value="exponential-reverse">Exponential Reverse</option>
                     </select>
-                </div>
-                <div class="settings-item">
+                </div> -->
+                <!-- <div class="settings-item">
                     <label class="settings-label" for="settings-decay-coeff">Decay Depth: </label>
                     <input class="settings-range" id="settings-decay-coeff" type="range" min="0" max="10" step="1">
-                </div>
+                </div> -->
                 <div class="settings-item">
                     <label class="settings-label" for="settings-reverb-type">Reverb Type: </label>
                     <select id="settings-reverb-type" class="settings-select">

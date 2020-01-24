@@ -6,7 +6,9 @@ export class SettingsService {
         this.settings;
         this.settings$ = new BehaviorSubject(undefined);
 
-        this.settings$.subscribe((settings) => this.settings = settings);
+        this.settings$.subscribe((settings) => {
+            this.settings = settings
+        });
     }
 
     async fetchSettings() {
@@ -14,7 +16,7 @@ export class SettingsService {
             const settings = await getJsonFile();
 
             // Find the default reverb and set it as selectedReverb
-            const reverb = settings.impulses.find(i => !!i.default);
+            const reverb = settings.impulses.find(i => i.default);
             settings.song.selectedReverb = reverb ? reverb.title : '';
             this.update(settings);
             this.initDom();
@@ -32,6 +34,7 @@ export class SettingsService {
 
     update(settings) {
         this.settings = settings;
+        // console.log(this.settings);
         this.publish();
 
         if (this.settings.changed) {
@@ -48,6 +51,9 @@ export class SettingsService {
         const length = document.getElementById('settings-song-length');
         length.value = this.settings.song.length / 60;
 
+        const density = document.getElementById('settings-density');
+        density.value = this.settings.song.density;
+
         const mode = document.getElementById('settings-mode');
         mode.value = this.settings.song.mode;
 
@@ -57,8 +63,8 @@ export class SettingsService {
         const envelope = document.getElementById('settings-envelope');
         envelope.value = this.settings.song.envelope;
 
-        const envelopeCoEff = document.getElementById('settings-envelope-coeff');
-        envelopeCoEff.value = this.settings.song.envelopeCoEff;
+        // const envelopeCoEff = document.getElementById('settings-envelope-coeff');
+        // envelopeCoEff.value = this.settings.song.envelopeCoEff;
 
         const driftEnvelope = document.getElementById('settings-drift-envelope');
         driftEnvelope.value = this.settings.song.driftEnvelope;
@@ -69,11 +75,11 @@ export class SettingsService {
         const driftType = document.getElementById('settings-drift-type');
         driftType.value = this.settings.song.driftType;
 
-        const decayEnvelope = document.getElementById('settings-decay-envelope');
-        decayEnvelope.value = this.settings.song.decayEnvelope;
+        // const decayEnvelope = document.getElementById('settings-decay-envelope');
+        // decayEnvelope.value = this.settings.song.decayEnvelope;
 
-        const decayCoEff = document.getElementById('settings-decay-coeff');
-        decayCoEff.value = this.settings.song.decayCoEff;
+        // const decayCoEff = document.getElementById('settings-decay-coeff');
+        // decayCoEff.value = this.settings.song.decayCoEff;
 
         const reverbSelect = document.getElementById('settings-reverb-type');
         this.buildReverbSelect(reverbSelect);
@@ -88,8 +94,15 @@ export class SettingsService {
 
         length.addEventListener('change', (e) => {
             const settings = {...this.settings};
-            settings.song.length = e.target.value !== 'infinite' ? +e.target.value * 60 : undefined;
+            settings.song.length = +e.target.value * 60;
             settings.changed = { field: 'length', title: 'Length' };
+            this.update(settings);
+        });
+
+        density.addEventListener('change', (e) => {
+            const settings = {...this.settings};
+            settings.song.density = +e.target.value;
+            settings.changed = { field: 'density', title: 'Density' };
             this.update(settings);
         });
 
@@ -114,12 +127,12 @@ export class SettingsService {
             this.update(settings);
         });
 
-        envelopeCoEff.addEventListener('change', (e) => {
-            const settings = {...this.settings};
-            settings.song.envelopeCoEff = +e.target.value;
-            settings.changed = { field: 'envelopeCoEff', title: 'Envelope Depth' };
-            this.update(settings);
-        });
+        // envelopeCoEff.addEventListener('change', (e) => {
+        //     const settings = {...this.settings};
+        //     settings.song.envelopeCoEff = +e.target.value;
+        //     settings.changed = { field: 'envelopeCoEff', title: 'Envelope Depth' };
+        //     this.update(settings);
+        // });
 
         driftEnvelope.addEventListener('change', (e) => {
             const settings = {...this.settings};
@@ -145,19 +158,19 @@ export class SettingsService {
             this.update(settings);
         });
 
-        decayEnvelope.addEventListener('change', (e) => {
-            const settings = {...this.settings};
-            settings.song.decayEnvelope = e.target.value;
-            settings.changed = { field: 'decayEnvelope', title: 'Decay Envelope' };
-            this.update(settings);
-        });
+        // decayEnvelope.addEventListener('change', (e) => {
+        //     const settings = {...this.settings};
+        //     settings.song.decayEnvelope = e.target.value;
+        //     settings.changed = { field: 'decayEnvelope', title: 'Decay Envelope' };
+        //     this.update(settings);
+        // });
 
-        decayCoEff.addEventListener('change', (e) => {
-            const settings = {...this.settings};
-            settings.song.decayCoEff = +e.target.value;
-            settings.changed = { field: 'decayCoEff', title: 'Decay Depth' };
-            this.update(settings);
-        });
+        // decayCoEff.addEventListener('change', (e) => {
+        //     const settings = {...this.settings};
+        //     settings.song.decayCoEff = +e.target.value;
+        //     settings.changed = { field: 'decayCoEff', title: 'Decay Depth' };
+        //     this.update(settings);
+        // });
 
         reverbSelect.addEventListener('change', (e) => {
             const settings = {...this.settings};
@@ -184,8 +197,6 @@ export class SettingsService {
     }
 
     buildReverbSelect(element) {
-        element.value = this.settings.song.selectedReverb;
-
         for (let impulse of this.settings.impulses) {
             const option = document.createElement('option');
             option.setAttribute('value', impulse.title);
@@ -193,6 +204,8 @@ export class SettingsService {
             option.appendChild(text);
             element.appendChild(option);
         }
+
+        element.value = this.settings.song.selectedReverb;
     }
 
     showMessage(updated) {

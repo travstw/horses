@@ -12,6 +12,10 @@ export class Gain {
         return this.node.gain.value;
     }
 
+    set value(value) {
+        this.node.gain.value = value;
+    }
+
     connect(output) {
         this.node.connect(output);
     }

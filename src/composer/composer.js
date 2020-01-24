@@ -5,6 +5,8 @@ import { AutomationService } from './services/automation-service';
 import { Scheduler } from './services/scheduler-service';
 import { NodeFactory } from '../engine/node-factory';
 import { Channel } from '../engine/channel';
+
+const DEFAULT_FADEOUT_LENGTH = 30;
 export class Composer {
     constructor(context, stereoBus, impulseService, settingsService, mediaService) {
         this.context = context;
@@ -21,26 +23,82 @@ export class Composer {
 
         this.settingsService.settings$.subscribe((settings) => {
             this.settings = settings;
+            if (!this.tracks) {
+                this.tracks = this.settings.tracks;
+            }
+
+            this.updateOnSettingsChange();
+
         });
     }
 
     async init() {
-        this.secondsPerMeasure = (60.0 / this.settings.song.bpm) * 4;
-        this.mediaService.setTracks(this.settings.tracks);
-        this.scheduler = new Scheduler(this.settings.song.numSchedulers, this.scheduleEvent$, ...this.settings.song.schedulerRange);
-        this.scheduleEvent$.subscribe(() => this.onScheduleEvent());
+        this.startTime = this.context.currentTime;
+        this.secondsPerBeat = (60.0 / this.settings.song.bpm);
+        this.scheduler = new Scheduler(this.settings.song.schedulers, this.scheduleEvent$, this.settingsService.settings$);
+        this.scheduleEvent$.subscribe((event) => this.onScheduleEvent(event));
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
 
-        // use a dummy gain node to create an envelope
-        this.envelope = NodeFactory.createNode('gain', { context: this.context});
-        this.stereoBus.connect(this.envelope.node);
-        AutomationService.setValueAtTime(this.envelope, 'gain', 0.0, 0);
-        AutomationService.linearRampToValueAtTime(this.envelope, 'gain', 1.0, this.context.currentTime + this.settings.song.length);
-
-        if (this.settings.song.mode === 'structured') {
-            await this.loadStaticTracks();
+        // set fade out if song has a defined length...
+        if (this.settings.song.length) {
+            const fadeOutStart = this.settings.song.length - DEFAULT_FADEOUT_LENGTH;
+            this.stereoBus.setFadeOut(fadeOutStart, DEFAULT_FADEOUT_LENGTH);
         }
 
+        // use a dummy gain node to create envelopes
+        this.envelope = NodeFactory.createNode('gain', { context: this.context});
+        this.envelope.value = 0.0;
+        this.stereoBus.connect(this.envelope.node);
+        this.updateEnvelope(this.envelope, this.settings.song.envelope);
+
+        // drift envelope
+        this.driftEnvelope = NodeFactory.createNode('gain', { context: this.context});
+        this.driftEnvelope.value = 0.0;
+        this.stereoBus.connect(this.driftEnvelope.node);
+        this.updateEnvelope(this.driftEnvelope, this.settings.song.driftEnvelope);
+
+
+
+        await this.loadStaticTracks();
+    }
+
+    updateOnSettingsChange() {
+        // only update in real time if song has already started... otherwise handled in init
+        if (this.settings && this.settings.changed && this.startTime) {
+            switch(this.settings.changed.field) {
+                case 'length':
+                    this.updateStereoBusFadeOut();
+                    // have to update all envelopes when length changes
+                    this.updateEnvelope(this.envelope, this.settings.song.envelope);
+                    this.updateEnvelope(this.driftEnvelope, this.settings.song.driftEnvelope);
+                    break;
+                case 'envelope':
+                    this.updateEnvelope(this.envelope, this.settings.song.envelope);
+                    break;
+                case 'driftEnvelope':
+                    this.updateEnvelope(this.driftEnvelope, this.settings.song.driftEnvelope);
+                    break;
+                case 'mode':
+                    if (this.settings.song.mode === 'free') {
+                        console.log('here');
+                        this.killChannelsByQuery((channel) => {
+                            return !!channel.trackMetadata.static;
+                        });
+                    } else {
+                        this.loadStaticTracks();
+                    }
+                    break;
+                case 'tracks':
+                    const trackTypes = this.settings.song.tracks;
+                    console.log('type', trackTypes);
+                    const types = trackTypes === 'all' ? ['vocals', 'instrument', 'ambient'] : trackTypes.split('-');
+
+                    this.killChannelsByQuery((channel) => {
+                        return !types.includes(channel.trackMetadata.type);
+                    });
+                    break;
+            }
+        }
     }
 
     start() {
@@ -49,39 +107,41 @@ export class Composer {
         // start immediately if in free mode...
         const duration = this.settings.song.mode === 'free' ? 0 : 15000;
         setTimeout(() => {
-            this.scheduler.start(duration ? undefined : true);
+            this.scheduler.start(!!duration);
         }, duration);
 
     }
 
     async loadStaticTracks() {
-        const tracks = this.mediaService.tracks;
-        for (let i = 0; i < tracks.length; i++) {
-            if (tracks[i].static) {
-                const name = tracks[i].title;
+        const mode = this.settings.song.mode;
+        const types = mode === 'structured' ? ['instrument', 'ambient', 'vocals', 'nature'] : ['nature'];
+        for (let i = 0; i < this.tracks.length; i++) {
+            if (this.tracks[i].static && types.includes(this.tracks[i].type)) {
+                const track = this.tracks[i];
+                const name = track.title;
                 this.logger.log(`Loading Track '${name}'`);
 
-                const buffer = await this.getBuffer(i);
+                const buffer = await this.getBuffer(track.filename);
 
                 // no audio file... just bail
                 if (!buffer) {
                     return;
                 }
                 const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
+                const { fadeIn } = this.getFadeTimes();
 
                 const channelOptions = {
                     context: this.context,
-                    automationService: AutomationService,
                     logger: this.logger,
+                    trackMetadata: track,
                     audio,
                     nodes: [],
-                    name: audio.name,
+                    name,
                     playEvent$: this.playEvent$,
                     endedEvent$: this.endedEvent$,
                     drift: 0,
-                    secondsPerMeasure: this.secondsPerMeasure,
-                    startMeasureOffset: tracks[i].startMeasureOffset,
-                    fadeIn: 15,
+                    secondsPerBeat: this.secondsPerBeat,
+                    fadeIn,
                 }
                 this.createChannel(channelOptions);
             }
@@ -89,71 +149,66 @@ export class Composer {
         return;
     }
 
-    async onScheduleEvent() {
-        const tracks = this.mediaService.getFilteredTrackList((track) => {
-            let types;
-            let subtypes = ['main', 'ambient'];
+    async onScheduleEvent(event) {
+        const trackTypes = this.settings.song.tracks;
+        // console.log('type', event);
+        const types = trackTypes === 'all' ? ['vocals', 'instrument', 'ambient'] : trackTypes.split('-');
+        if (!types.includes(event)) {
+            return;
+        }
 
-            if (this.settings.song.tracks === 'vocals') {
-                types = ['vocals', 'nature'];
-            } else if (['instrumental', 'ambient'].includes(this.settings.song.tracks)) {
-                types = ['instrumental', 'nature'];
-                if (this.settings.song.tracks === 'ambient') {
-                    subtypes = ['ambient'];
-                }
-            } else {
-                types = ['vocals', 'instrument', 'nature'];
-            }
+        const tracks = this.tracks.filter((track) => {
+            const include = this.settings.song.mode === 'free' ? true : !track.static;
+            const thresholdReached = this.envelope.value >= track.playThreshold;
+            const typeMatch = track.type === event
 
-            const include = (this.settings.song.mode === 'free');
-            console.log(types, include);
-
-            return (track.static === include)
-                && (this.envelope.value > track.playThreshold)
-                && types.includes(track.type)
-                && subtypes.includes(track.subtype);
+            // console.log(event, include, thresholdReached, typeMatch)
+            return include && thresholdReached && typeMatch;
         });
 
         // no tracks match play criteria... bail
         if (!tracks.length) {
-            console.log('why no tracks?');
+            console.log('why no tracks?', this.envelope.value);
             return;
         }
 
         const index = getRandomInteger(0, tracks.length - 1);
-        const name = tracks[index].title;
+        const track = tracks[index];
+        const name = track.title;
 
-        console.log(name, tracks);
-        const buffer = await this.getBuffer(index);
-        console.log('buffer length', buffer.length);
+        const buffer = await this.getBuffer(track.filename);
+
         // no audio file... just bail
         if (!buffer) {
-            console.log('why no buffer?');
             return;
         }
         const audio = NodeFactory.createNode('audio', {context: this.context, name, buffer});
+        const { fadeIn, fadeOut} = this.getFadeTimes();
+        const duration = this.getDuration();
+        const drift = this.getTheDrift(track);
+        console.log('drift:', drift);
 
         const channelOptions = {
             context: this.context,
-            automationService: AutomationService,
             logger: this.logger,
+            trackMetadata: track,
             audio,
             nodes: [],
-            name: audio.name,
+            name: name,
             playEvent$: this.playEvent$,
             endedEvent$: this.endedEvent$,
-            drift: 0,
-            secondsPerMeasure: this.secondsPerMeasure,
-            duration: 30,
-            fadeIn: 10,
-            fadeOut: 10
+            drift,
+            secondsPerBeat: this.secondsPerBeat,
+            duration,
+            fadeIn,
+            fadeOut
         }
         this.createChannel(channelOptions);
     }
 
-    async getBuffer(index) {
+    async getBuffer(filename) {
         try {
-           return await this.mediaService.getTrack(index);
+           return await this.mediaService.getTrack(filename);
         } catch (e) {
             // something happened fetching the file... just log it and move on.
             console.error(e)
@@ -167,15 +222,137 @@ export class Composer {
         this.stereoBus.connect(channel.output.node);
     }
 
+    stopAll() {
+        this.channels.forEach(c => c.stop(0));
+        this.scheduler.stop();
+        this.channels = [];
+    }
+
     onEndedEvent(id) {
         // clean up and remove reference to channel with ended audio
         const channel = this.channels.find((c) => c.id === id);
+        // this shouldn't happen...
+        if (!channel) {
+            return;
+        }
+
         this.stereoBus.disconnect(channel.output);
         this.logger.log(`Track '${channel.name}' ended`);
         this.channels = this.channels.filter(c => c.id !== id);
     }
 
-    setFadeTimes() {
+    // reset envelope automation to go from current value to end value with new time or curve
+    updateEnvelope(envelope, value) {
+        // console.log(this.envelope.value);
+        AutomationService.cancelScheduledValues(envelope, 'gain', 0);
+        const length = !this.settings.song.length ? 300 : this.settings.song.length;
+        const timeOffset = length - (this.context.currentTime - this.startTime) - DEFAULT_FADEOUT_LENGTH;
+        const gain = envelope.value;
+        switch (value) {
+            // We reset envelope values on change to either .5 or 1 so there will always be some travel
+            case 'linear':
+                if (gain > .5) {
+                    envelope.value = this.startTime ? 0.5 : 0
+                }
+                AutomationService.linearRampToValueAtTime(envelope, 'gain', 1.0, this.context.currentTime + timeOffset);
+                break;
+            case 'exponential':
+                if (gain > .5) {
+                    envelope.value = this.startTime ? 0.5 : 0
+                }
+                AutomationService.exponentialRampToValueAtTime(envelope, 'gain', 1.0, this.context.currentTime + timeOffset);
+                break;
+            case 'flat':
+                // TODO use the coefficient to set this value... just open it up for now
+                envelope.value = 1;
+                break;
+            case 'exponentialReverse':
+                if (gain < .5) {
+                    envelope.value = this.startTime ? 0.5 : 1
+                }
+                AutomationService.exponentialRampToValueAtTime(envelope, 'gain', 0.0, this.context.currentTime + timeOffset);
+                break;
+            case 'linearReverse':
+                if (gain < .5) {
+                    envelope.value = this.startTime ? 0.5 : 1
+                }
+                AutomationService.linearRampToValueAtTime(envelope, 'gain', 0.0, this.context.currentTime + timeOffset);
+                break;
+        }
+    }
+
+    updateStereoBusFadeOut() {
+        if (!this.settings.song.length) {
+            this.stereoBus.cancelFadeOut();
+            return;
+        }
+        let newFadeOutTime = this.settings.song.length - (this.context.currentTime - this.startTime);
+        // if user selects length shorter than song has already been playing, start fade immediately
+        newFadeOutTime = newFadeOutTime > 0 ? newFadeOutTime : DEFAULT_FADEOUT_LENGTH;
+        this.stereoBus.setFadeOut(newFadeOutTime, DEFAULT_FADEOUT_LENGTH);
+    }
+
+    killChannelsByQuery(query) {
+        this.channels
+            .filter(query)
+            .forEach(fc => {
+                AutomationService.cancelScheduledValues(fc.output, 'gain', 0);
+                AutomationService.exponentialRampToValueAtTime(fc.output, 'gain', 0, this.context.currentTime + 10);
+                console.log(fc.trackMetadata);
+                fc.stop(this.context.currentTime + 11);
+            });
+    }
+
+    getFadeTimes() {
+        return {
+            fadeIn: getRandomInteger(this.settings.song.trackFadeRange[0], this.settings.song.trackFadeRange[1]),
+            fadeOut: getRandomInteger(this.settings.song.trackFadeRange[0], this.settings.song.trackFadeRange[1]),
+        };
+    }
+
+    getDuration() {
+        return getRandomInteger(this.settings.song.trackDurationRange[0], this.settings.song.trackDurationRange[1])
+    }
+
+    getTheDrift(track) {
+
+        // currently, flat sets the evenlope value to 1 and stays there.
+        // if flat get smarter, an update to this will be a TODO
+        if (this.settings.song.driftEnvelope === 'flat' || !track.drift) {
+            return 0;
+        }
+
+        const driftEnvelope = this.driftEnvelope.value;
+        const driftType = this.settings.song.driftType;
+        const driftAmount = this.settings.song.driftCoEff;
+        const driftMultiplier = Math.random() * Math.floor(driftEnvelope * 10 * driftAmount);
+
+        // console.log(driftEnvelope, driftType, driftAmount, driftMultiplier);
+
+        if (driftType === 'quantized') {
+            if (driftMultiplier > 90) {
+                return this.secondsPerBeat * 4 / 2;
+            } else if (driftMultiplier > 80) {
+                return this.secondsPerBeat * 4 / 4;
+            } else if (driftMultiplier > 70) {
+                return this.secondsPerBeat * 4 / 8;
+            } else if (driftMultiplier > 60) {
+                return this.secondsPerBeat * 4 / 16;
+            } else if (driftMultiplier > 50) {
+                return this.secondsPerBeat * 4 / 32;
+            } else if (driftMultiplier > 40) {
+                return this.secondsPerBeat * 4 / 64;
+            } else if (driftMultiplier > 30) {
+                return this.secondsPerBeat * 4 / 128;
+            } else if (driftMultiplier > 20) {
+                return this.secondsPerBeat * 4 / 256;
+            } else {
+                return 0;
+            }
+         } else {
+            return driftMultiplier / 10;
+        }
+
 
     }
 }

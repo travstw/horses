@@ -109,6 +109,18 @@ export class StereoBus {
 
     }
 
+    cancelFadeOut() {
+        AutomationService.cancelScheduledValues(this.output, 'gain', 0);
+    }
+
+    setFadeOut(time, duration) {
+        // cancel current scheduled fade
+       this.cancelFadeOut();
+
+        const valueTime = this.context.currentTime + time;
+        AutomationService.setTargetAtTime(this.output, 'gain', 0, valueTime, duration / 3);
+    }
+
     getOutputAudioParams() {
         return this.nodes.reduce((params, node) => {
             const nodeParams = node.getAudioParams();
