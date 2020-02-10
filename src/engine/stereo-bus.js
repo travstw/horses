@@ -24,16 +24,21 @@ export class StereoBus {
         this.setReverb();
 
         this.settingsService.settings$.subscribe(settings => {
+            // set initial output level
+            if (settings && !this.settings) {
+                this.output.value = settings.song.outputLevel / 10;
+            }
             this.settings = settings
-            if (this.settings && this.settings.changed) {
+
+            if (this.settings && this.settings.changed && this.settings.changed.type === 'outputLevel') {
                 // TODO only apply settings if they actually changed...
                 switch (this.settings.changed.field) {
                     case 'outputLevel':
-                        const outputLevel = this.settings.song.outputLevel / 10;
+                        const outputLevel = this.settings.song.outputLevel;
                         this.setOutputLevel(outputLevel);
                         break;
                     case 'outputReverbLevel':
-                        const reverbLevel = this.settings.song.outputReverbLevel / 10;
+                        const reverbLevel = this.settings.song.outputReverbLevel;
                         this.setReverbReturnLevel(reverbLevel);
                         break;
                     case 'selectedReverb':
@@ -78,11 +83,11 @@ export class StereoBus {
 
         const reverb = await this.impulseService.getImpulse(impulse.filename);
         // fade out reverb before replacing it to avoid clicks
-        this.setReverbReturnLevel(0.0, 0.1);
+        AutomationService.exponentialRampToValueAtTime(this.reverbReturnLevel, 'gain', 0, 0.5);
         const oldReverb = this.reverb;
         this.reverb = reverb;
         const level = this.settings.song.outputReverbLevel;
-        this.setReverbReturnLevel(level, 0.5)
+        this.setReverbReturnLevel(level)
         this.input.connect(this.reverb.node);
         this.reverb.connect(this.reverbReturnLevel.node);
         this.reverbReturnLevel.connect(this.output.node);
@@ -96,17 +101,17 @@ export class StereoBus {
 
     }
 
-    // defaults to .5 seconds so reverb can be adjusted without 'clicks' by user
-    setReverbReturnLevel(level, time = 0.5) {
-        const valueTime = this.context.currentTime + time;
-        AutomationService.exponentialRampToValueAtTime(this.reverbReturnLevel, 'gain', level, valueTime);
+    setReverbReturnLevel(level) {
+        const amount = parseInt(level) / 100;
+
+        console.log('verb', level, amount, amount * amount);
+        this.reverbReturnLevel.value = amount * amount;
     }
 
-    // defaults to .5 seconds so level can be adjusted without 'clicks' by user
-    setOutputLevel(level, time = 0.5) {
-        const valueTime = this.context.currentTime + time;
-        AutomationService.exponentialRampToValueAtTime(this.output, 'gain', level, valueTime);
 
+    setOutputLevel(level) {
+        const amount = parseInt(level) / 100;
+        this.output.value = amount * amount;
     }
 
     cancelFadeOut() {

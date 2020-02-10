@@ -4,7 +4,9 @@ export class ModalService {
         this.modalBG = document.getElementById('modal-background');
         this.about = document.getElementById('about');
         this.settings = document.getElementById('settings');
+        this.balance = document.getElementById('balance');
         this.aboutModal = document.getElementById('about-modal');
+        this.balanceModal = document.getElementById('balance-modal');
         this.settingsModal = document.getElementById('settings-modal');
         this.modalClose = document.getElementsByClassName('modal-close');
         this.hamburger = document.getElementById('hamburger');
@@ -43,6 +45,15 @@ export class ModalService {
         //     this.hamburger.style.height = '50px';
         //     this.hamburger.style.width = '50px';
         // });
+        this.balance.addEventListener('click', (e) => {
+            e.stopPropagation()
+
+            this.clearModals();
+
+            this.balanceModal.style.opacity = 1;
+            this.balanceModal.style.pointerEvents = 'auto';
+            this.modalBG.style.display = 'block';
+        });
 
         this.about.addEventListener('click', (e) => {
             e.stopPropagation()

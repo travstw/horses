@@ -2,7 +2,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { Logger } from '../logger';
 import { getRandomInteger } from '../utils';
 import { AutomationService } from './services/automation-service';
-import { Scheduler } from './services/scheduler-service';
+import { SchedulerService } from './services/scheduler-service';
 import { NodeFactory } from '../engine/node-factory';
 import { Channel } from '../engine/channel';
 
@@ -37,7 +37,7 @@ export class Composer {
     async init() {
         this.startTime = this.context.currentTime;
         this.secondsPerBeat = (60.0 / this.settings.song.bpm);
-        this.scheduler = new Scheduler(this.settings.song.schedulers, this.scheduleEvent$, this.settingsService.settings$);
+        this.schedulerService = new SchedulerService(this.scheduleEvent$, this.settingsService.settings$);
         this.scheduleEvent$.subscribe((event) => this.onScheduleEvent(event));
         this.endedEvent$.subscribe((id) => this.onEndedEvent(id));
         AutomationService.cancelScheduledValues(this.stereoBus.output, 'gain', 0);
@@ -69,7 +69,7 @@ export class Composer {
     updateOnSettingsChange() {
         // only update in real time if song has already started... otherwise handled in init
         if (this.settings && this.settings.changed && this.startTime) {
-            switch(this.settings.changed.field) {
+            switch(this.settings.changed.type) {
                 case 'length':
                     this.updateStereoBusFadeOut();
                     this.setSuicideTimer(); // update timer
@@ -101,6 +101,16 @@ export class Composer {
                         return !types.includes(channel.trackMetadata.type);
                     });
                     break;
+                case 'level':
+                    const tracks = this.channels.filter(c => c.trackMetadata.type === this.settings.changed.field);
+                    if (tracks.length) {
+                        const type = this.settings.song.trackTypes.find(t => t.type === this.settings.changed.field);
+                        tracks.forEach(t => {
+                            t.output.value = t.output.value * (type.level / 100);
+                            AutomationService.cancelScheduledValues(t.output, 'gain', 0);
+                        });
+                    }
+
             }
         }
     }
@@ -111,14 +121,14 @@ export class Composer {
         // start immediately if in free mode...
         const duration = this.settings.song.mode === 'free' ? 0 : 15000;
         setTimeout(() => {
-            this.scheduler.start(!!duration);
+            this.schedulerService.start(!!duration);
         }, duration);
 
     }
 
-    stop() {
-        this.channels.forEach(c => c.stop(0));
-        this.scheduler.stop();
+    stop(time) {
+        this.killChannelsByQuery((ch) => true, time);
+        this.schedulerService.stop();
         this.channels = [];
         clearTimeout(this.suicideTimer);
         this.songEnded$.next(true);
@@ -137,8 +147,8 @@ export class Composer {
         }
 
         this.suicideTimer = setTimeout(() => {
-            this.stop();
-        }, (length + 15) * 1000);
+            this.stop(5);
+        }, (length) * 1000);
     }
 
     ended() {
@@ -175,6 +185,7 @@ export class Composer {
                     drift: 0,
                     secondsPerBeat: this.secondsPerBeat,
                     fadeIn,
+                    settings: this.settings
                 }
                 this.createChannel(channelOptions);
             }
@@ -183,6 +194,7 @@ export class Composer {
     }
 
     async onScheduleEvent(event) {
+        // console.log('event', event);
         const trackTypes = this.settings.song.tracks;
         // console.log('type', event);
         const types = trackTypes === 'all' ? ['vocals', 'instrument', 'ambient'] : trackTypes.split('-');
@@ -232,7 +244,8 @@ export class Composer {
             secondsPerBeat: this.secondsPerBeat,
             duration,
             fadeIn,
-            fadeOut
+            fadeOut,
+            settings: this.settings
         }
         this.createChannel(channelOptions);
     }
@@ -322,7 +335,7 @@ export class Composer {
             .filter(query)
             .forEach(fc => {
                 AutomationService.cancelScheduledValues(fc.output, 'gain', 0);
-                AutomationService.exponentialRampToValueAtTime(fc.output, 'gain', 0, this.context.currentTime + time);
+                AutomationService.linearRampToValueAtTime(fc.output, 'gain', 0, this.context.currentTime + time);
 
                 fc.stop(this.context.currentTime + time);
             });
@@ -353,23 +366,23 @@ export class Composer {
         const driftMultiplier = Math.random() * Math.floor(driftEnvelope * 10 * driftAmount);
 
         // console.log(driftEnvelope, driftType, driftAmount, driftMultiplier);
-
+        const quantizeMultiplier = driftEnvelope * driftAmount;
         if (driftType === 'quantized') {
-            if (driftMultiplier > 90) {
+            if (quantizeMultiplier > .90) {
                 return this.secondsPerBeat * 4 / 2;
-            } else if (driftMultiplier > 80) {
+            } else if (quantizeMultiplier > .80) {
                 return this.secondsPerBeat * 4 / 4;
-            } else if (driftMultiplier > 70) {
+            } else if (quantizeMultiplier > .70) {
                 return this.secondsPerBeat * 4 / 8;
-            } else if (driftMultiplier > 60) {
+            } else if (quantizeMultiplier > .60) {
                 return this.secondsPerBeat * 4 / 16;
-            } else if (driftMultiplier > 50) {
+            } else if (quantizeMultiplier > .50) {
                 return this.secondsPerBeat * 4 / 32;
-            } else if (driftMultiplier > 40) {
+            } else if (quantizeMultiplier > .40) {
                 return this.secondsPerBeat * 4 / 64;
-            } else if (driftMultiplier > 30) {
+            } else if (quantizeMultiplier > .30) {
                 return this.secondsPerBeat * 4 / 128;
-            } else if (driftMultiplier > 20) {
+            } else if (quantizeMultiplier > .20) {
                 return this.secondsPerBeat * 4 / 256;
             } else {
                 return 0;

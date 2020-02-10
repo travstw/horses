@@ -5,23 +5,24 @@
         "tracks": "all",
         "mode": "free",
         "bpm": 100,
-        "density": 2,
-        "schedulers": [
+        "trackTypes": [
             {
-                "event": "vocals",
-                "range": [10, 30]
+                "type": "vocals",
+                "level": 70,
+                "density": 2,
+                "schedulerRange": [10, 30]
             },
             {
-                "event": "vocals",
-                "range": [20, 40]
+                "type": "instrument",
+                "level": 70,
+                "density": 2,
+                "schedulerRange": [20, 40]
             },
             {
-                "event": "instrument",
-                "range": [20, 40]
-            },
-            {
-                "event": "ambient",
-                "range": [10, 30]
+                "type": "ambient",
+                "density": 2,
+                "level": 70,
+                "schedulerRange": [10, 30]
             }
         ],
         "trackFadeRange": [10, 20],
@@ -33,8 +34,8 @@
         "driftType" : "quantized",
         "decayEnvelope" : "linear",
         "decayCoEff": 1,
-        "outputLevel": 5,
-        "outputReverbLevel": 1,
+        "outputLevel": 70,
+        "outputReverbLevel": 50,
         "selectedReverb": ""
     },
     "impulses": [
@@ -429,6 +430,101 @@
             "playThreshold": 0,
             "startOffset": 32,
             "lengthInBeats": 16
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_blend_1.mp3",
+            "title": "rob_blend_1",
+            "playThreshold": 0.2,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_blend_wide.mp3",
+            "title": "rob_blend_wide",
+            "playThreshold": 0.3,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_blend_wide.mp3",
+            "title": "rob_blend_1",
+            "playThreshold": 0.2,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_mei_blend_1.mp3",
+            "title": "rob_mei_blend_1",
+            "playThreshold": 0.4,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_mei_blend_2.mp3",
+            "title": "rob_mei_blend_2",
+            "playThreshold": 0.6,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "rob_mei_wide_1.mp3",
+            "title": "rob_mei_wide_1",
+            "playThreshold": 0.3,
+            "startOffset": -1,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "instrument",
+            "subtype": "background",
+            "filename": "mando_italiano.mp3",
+            "title": "mando_italiano",
+            "playThreshold": 0.6,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "mbira.mp3",
+            "title": "mbira",
+            "playThreshold": 0.2,
+            "startOffset": -2,
+            "lengthInBeats": 32
         }
     ]
 }

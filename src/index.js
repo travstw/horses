@@ -7,8 +7,23 @@ import { SettingsService } from '../src/settings/settings-service';
 import { NodeFactory } from '../src/engine/node-factory';
 import { StereoBus } from '../src/engine/stereo-bus';
 import { ImpulseService } from './composer/services/impulse-service';
-class SystemBuilder {
-    constructor() {
+
+
+window.addEventListener('load', init, false);
+function init() {
+    let context;
+    try {
+        context = new AudioContext();
+        const system = new SystemController(context);
+    }
+    catch(e) {
+        alert('Web Audio API is not supported in this browser, please use a recent version of Chrome or Firefox');
+    }
+}
+
+class SystemController {
+    constructor(context) {
+        this.context = context;
         this.build();
     }
 
@@ -16,7 +31,6 @@ class SystemBuilder {
         this.startButton = document.getElementById('start');
         this.title = document.getElementById('title');
         this.playing = false;
-        this.context = new AudioContext();
         this.videoService = new VideoService();
         this.mediaService = new MediaService();
         this.modalService = new ModalService();
@@ -87,9 +101,11 @@ class SystemBuilder {
         }
 
         this.title.style.opacity = 0.7;
-        this.title.style.top = '13%';
+        this.title.style.top = '16%';
     }
 }
 
-const system = new SystemBuilder();
+
+
+
 

@@ -13,6 +13,7 @@
                 <div class="hamburger-lines"></div>
             </div>
             <div class="hamburger-menu" id="ham-menu">
+                <a id="balance" class="menu-items">&#9737; BALANCE</a>
                 <a id="settings" class="menu-items">&#9737; SETTINGS</a>
                 <a id="about" class="menu-items">&#9737; ABOUT</a>
             </div>
@@ -83,6 +84,7 @@
         <div class="modals" id="settings-modal">
             <h2>Settings</h2>
             <a class="modal-close">X</a>
+            <div class="settings-message" id="settings-message"></div>
             <div class="modal-content-container" id="settings-content">
                 <div class="settings-item">
                     <label class="settings-label" for="settings-song-length">Length: </label>
@@ -99,10 +101,10 @@
                         <option class="settings-option" value=0>Infinite</option>
                     </select>
                 </div>
-                <div class="settings-item">
+                <!-- <div class="settings-item">
                     <label class="settings-label" for="settings-density">Density: </label>
                     <input class="settings-range" id="settings-density" type="range" min="1" max="4" step="1">
-                </div>
+                </div> -->
                 <div class="settings-item">
                     <label class="settings-label" for="settings-mode">Mode: </label>
                     <select id="settings-mode" class="settings-select" value="structured">
@@ -110,7 +112,7 @@
                         <option class="settings-option" value="free">Free</option>
                     </select>
                 </div>
-                <div class="settings-item">
+                <!-- <div class="settings-item">
                     <label class="settings-label" for="settings-tracks">Track Types: </label>
                     <select id="settings-tracks" class="settings-select" value="all">
                         <option class="settings-option" value="all">All</option>
@@ -119,7 +121,7 @@
                         <option class="settings-option" value="instrument-ambient">Instruments + Ambient</option>
                         <option class="settings-option" value="ambient">Ambient</option>
                     </select>
-                </div>
+                </div> -->
                 <div class="settings-item">
                     <label class="settings-label" for="settings-envelope">Envelope: </label>
                     <select id="settings-envelope" class="settings-select" value="linear">
@@ -175,15 +177,61 @@
 
                     </select>
                 </div>
+            </div>
+        </div>
+
+        <div class="modals" id="balance-modal">
+            <h2>Balance</h2>
+            <a class="modal-close">X</a>
+            <div class="settings-message" id="balance-message"></div>
+            <div class="modal-content-container">
+                <h4 class="balance-header">&#9737; Tracks</h4>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-tracks">Types: </label>
+                        <select id="settings-tracks" class="settings-select" value="all">
+                            <option class="settings-option" value="all">All</option>
+                            <option class="settings-option" value="vocals">Vocals</option>
+                            <option class="settings-option" value="vocals-ambient">Vocals + Ambient</option>
+                            <option class="settings-option" value="instrument-ambient">Instruments + Ambient</option>
+                            <option class="settings-option" value="ambient">Ambient</option>
+                        </select>
+                    </div>
+                <h4 class="balance-header">&#9737; Density</h4>
                 <div class="settings-item">
-                    <label class="settings-label" for="settings-reverb-level">Reverb Level: </label>
-                    <input class="settings-range" id="settings-reverb-level" type="range" min="0" max="10" step="1">
+                    <label class="settings-label" for="settings-vocals-density">Vocals: </label>
+                    <input class="settings-range" id="settings-vocals-density" type="range" min="1" max="4" step="1">
                 </div>
                 <div class="settings-item">
-                    <label class="settings-label" for="settings-master-level">Master Level: </label>
-                    <input class="settings-range" id="settings-master-level" type="range" min="0" max="10" step="1">
+                    <label class="settings-label" for="settings-instruments-density">Instruments: </label>
+                    <input class="settings-range" id="settings-instruments-density" type="range" min="1" max="4" step="1">
                 </div>
-                <div id="settings-message"></div>
+                <div class="settings-item">
+                    <label class="settings-label" for="settings-ambient-density">Ambient: </label>
+                    <input class="settings-range" id="settings-ambient-density" type="range" min="1" max="4" step="1">
+                </div>
+
+
+                <h4 class="balance-header">&#9737; Levels</h4>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-vocals-level">Vocals</label>
+                        <input class="settings-range" id="settings-vocals-level" type="range" min="0" max="100">
+                    </div>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-instruments-level">Instruments</label>
+                        <input class="settings-range" id="settings-instruments-level" type="range" min="0" max="100" >
+                    </div>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-ambient-level">Ambient</label>
+                        <input class="settings-range" id="settings-ambient-level" type="range" min="0" max="100">
+                    </div>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-reverb-level">Reverb</label>
+                        <input class="settings-range" id="settings-reverb-level" type="range" min="0" max="100">
+                    </div>
+                    <div class="settings-item">
+                        <label class="settings-label" for="settings-master-level">Master</label>
+                        <input class="settings-range" id="settings-master-level" type="range" min="0" max="100">
+                    </div>
             </div>
         </div>
         <div id="modal-background"></div>

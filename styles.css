@@ -32,7 +32,7 @@ select {
 .title {
     position: absolute;
     transform: translate(-50%, -50%);
-    top: 13%;
+    top: 16%;
     /* left: 25px; */
     left: 50%;
     opacity: 0.70;
@@ -91,7 +91,7 @@ select {
     object-fit: cover;
     transform: rotateY(180deg);
     opacity: 0;
-    transition: opacity 5s;
+    transition: opacity 3s;
 }
 
 .hamburger-icon {
@@ -146,10 +146,11 @@ select {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    margin-top: 3px;
     padding: 10px;
     padding-top: 15px;
     border-radius: 8px;
-    font-size: 1.4em;
+    font-size: 1.25em;
     z-index: 10;
     opacity: 0;
     background-color:  rgba(207, 184, 161, .2);
@@ -166,7 +167,7 @@ select {
     position: absolute;
     top: 30px;
     right: 25px;
-    font-size: 1.5em;
+    font-size: 1.25em;
     z-index: 10;
     opacity: 0.70;
 }
@@ -191,7 +192,7 @@ select {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 85%;
+    height: 90%;
     width: 50%;
     background-color: rgba(207, 184, 161, 1);
     z-index: 10;
@@ -460,8 +461,8 @@ select {
     color: rgba(184, 149, 114, .8);
 }
 
-#settings-message {
-    padding-top: 20px;
+.settings-message {
+    padding-top: 5px;
     margin: auto;
     width: 100%;
     /* padding: 10%; */
@@ -471,4 +472,13 @@ select {
     font-size: 1em;
     opacity: 0;
     transition: opacity 1s;
+}
+
+.balance-header {
+    padding-left: 4%;
+    margin-bottom: 1%;
+}
+
+.balance-header:not(:first-child) {
+    margin-top: 4%;
 }

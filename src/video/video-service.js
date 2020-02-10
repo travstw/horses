@@ -35,10 +35,11 @@ export class VideoService {
                 // console.log('remove');
                 this.container.removeChild(video);
                 this.videoElements = this.videoElements.filter((v) => v.id !== video.id);
+                this.start();
             }, 2000);
 
-            this.start();
-        }, 10000);
+
+        }, 8000);
     }
 
     stop() {

@@ -34,7 +34,6 @@ export class SettingsService {
 
     update(settings) {
         this.settings = settings;
-        // console.log(this.settings);
         this.publish();
 
         if (this.settings.changed) {
@@ -47,12 +46,21 @@ export class SettingsService {
     }
 
     initDom() {
+        const vocals = this.settings.song.trackTypes.find(tt => tt.type === 'vocals');
+        const instruments = this.settings.song.trackTypes.find(tt => tt.type === 'instrument');
+        const ambient = this.settings.song.trackTypes.find(tt => tt.type === 'ambient');
 
         const length = document.getElementById('settings-song-length');
         length.value = this.settings.song.length / 60;
 
-        const density = document.getElementById('settings-density');
-        density.value = this.settings.song.density;
+        const vocalDensity = document.getElementById('settings-vocals-density');
+        vocalDensity.value = vocals.density || 1;
+
+        const instrumentDensity = document.getElementById('settings-instruments-density');
+        instrumentDensity.value = instruments.density || 1;
+
+        const ambientDensity = document.getElementById('settings-ambient-density');
+        ambientDensity.value = ambient.density || 1;
 
         const mode = document.getElementById('settings-mode');
         mode.value = this.settings.song.mode;
@@ -84,6 +92,15 @@ export class SettingsService {
         const reverbSelect = document.getElementById('settings-reverb-type');
         this.buildReverbSelect(reverbSelect);
 
+        const vocalLevel = document.getElementById('settings-vocals-level');
+        vocalLevel.value = vocals.level;
+
+        const instrumentLevel = document.getElementById('settings-instruments-level');
+        instrumentLevel.value = instruments.level;
+
+        const ambientLevel = document.getElementById('settings-ambient-level');
+        ambientLevel.value = ambient.level;
+
         const reverbLevel = document.getElementById('settings-reverb-level');
         reverbLevel.value = this.settings.song.outputReverbLevel;
 
@@ -92,30 +109,65 @@ export class SettingsService {
 
         // const apply = document.getElementById('settings-submit');
 
+        vocalDensity.addEventListener('change', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'vocals');
+            vocals.density = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, vocals);
+
+            settings.changed = { field: 'vocals', title: 'Vocal Density', type: 'density' };
+            this.update(settings);
+        });
+
+        instrumentDensity.addEventListener('change', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'instrument');
+            instrument.density = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, instrument);
+            settings.changed = { field: 'instrument', title: 'Instrument Density', type: 'density' };
+            this.update(settings);
+        });
+
+        ambientDensity.addEventListener('change', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'ambient');
+            ambient.density = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, ambient);
+
+            settings.changed = { field: 'ambient', title: 'Ambient Density', type: 'density'};
+            this.update(settings);
+        });
+
         length.addEventListener('change', (e) => {
             e.stopPropagation();
 
             const settings = {...this.settings};
             settings.song.length = +e.target.value * 60;
-            settings.changed = { field: 'length', title: 'Length' };
+            settings.changed = { field: 'length', title: 'Length', type: 'length' };
             this.update(settings);
         });
 
-        density.addEventListener('change', (e) => {
-            e.stopPropagation();
+        // density.addEventListener('change', (e) => {
+        //     e.stopPropagation();
 
-            const settings = {...this.settings};
-            settings.song.density = +e.target.value;
-            settings.changed = { field: 'density', title: 'Density' };
-            this.update(settings);
-        });
+        //     const settings = {...this.settings};
+        //     settings.song.density = +e.target.value;
+        //     settings.changed = { field: 'density', title: 'Density' };
+        //     this.update(settings);
+        // });
 
         mode.addEventListener('change', (e) => {
             e.stopPropagation();
 
             const settings = {...this.settings};
             settings.song.mode = e.target.value;
-            settings.changed = { field: 'mode', title: 'Mode' };
+            settings.changed = { field: 'mode', title: 'Mode', type: 'mode'};
             this.update(settings);
         });
 
@@ -124,7 +176,7 @@ export class SettingsService {
 
             const settings = {...this.settings};
             settings.song.tracks = e.target.value;
-            settings.changed = { field: 'tracks', title: 'Tracks' };
+            settings.changed = { field: 'tracks', title: 'Tracks', type: 'tracks' };
             this.update(settings);
         });
 
@@ -133,7 +185,7 @@ export class SettingsService {
 
             const settings = {...this.settings};
             settings.song.envelope = e.target.value;
-            settings.changed = { field: 'envelope', title: 'Envelope' };
+            settings.changed = { field: 'envelope', title: 'Envelope', type: 'envelope'};
             this.update(settings);
         });
 
@@ -149,7 +201,7 @@ export class SettingsService {
 
             const settings = {...this.settings};
             settings.song.driftEnvelope = e.target.value;
-            settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' };
+            settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' , type: 'driftEnvelope'};
 
             this.update(settings);
         });
@@ -159,7 +211,7 @@ export class SettingsService {
 
             const settings = {...this.settings};
             settings.song.driftType = e.target.value;
-            settings.changed = { field: 'driftType', title: 'Drift Type' };
+            settings.changed = { field: 'driftType', title: 'Drift Type', type: 'driftType' };
 
             this.update(settings);
         });
@@ -169,7 +221,7 @@ export class SettingsService {
 
             const settings = {...this.settings};
             settings.song.driftCoEff = +e.target.value;
-            settings.changed = { field: 'driftCoEff', title: 'Drift Depth' };
+            settings.changed = { field: 'driftCoEff', title: 'Drift Depth', type: 'driftCoEff' };
 
             this.update(settings);
         });
@@ -194,25 +246,61 @@ export class SettingsService {
             const settings = {...this.settings};
             const impulse = settings.impulses.find(i => i.title === e.target.value);
             settings.song.selectedReverb = impulse.title;
-            settings.changed = { field: 'selectedReverb', title: 'Reverb Type' };
+            settings.changed = { field: 'selectedReverb', title: 'Reverb Type', type: 'outputLevel' };
             this.update(settings);
         });
 
-        reverbLevel.addEventListener('change', (e) => {
+        vocalLevel.addEventListener('input', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'vocals');
+            vocals.level = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, vocals);
+
+            settings.changed = { field: 'vocals', title: 'Vocals Level', type: 'level'};
+            this.update(settings);
+        });
+
+        instrumentLevel.addEventListener('input', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'instrument');
+            instruments.level = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, instruments);
+
+            settings.changed = { field: 'instrument', title: 'Instrument Level', type: 'level'};
+            this.update(settings);
+        });
+
+        ambientLevel.addEventListener('input', (e) => {
+            e.stopPropagation();
+
+            const settings = {...this.settings};
+            const index = settings.song.trackTypes.findIndex(tt => tt.type === 'ambient');
+            ambient.level = +e.target.value;
+            settings.song.trackTypes.splice(index, 1, ambient);
+
+            settings.changed = { field: 'ambient', title: 'Ambient Level', type: 'level'};
+            this.update(settings);
+        });
+
+        reverbLevel.addEventListener('input', (e) => {
             e.stopPropagation();
 
             const settings = {...this.settings};
             settings.song.outputReverbLevel = +e.target.value;
-            settings.changed = { field: 'outputReverbLevel', title: 'Reverb Level' };
+            settings.changed = { field: 'outputReverbLevel', title: 'Reverb Level', type: 'outputLevel' };
             this.update(settings);
         });
 
-        masterLevel.addEventListener('change', (e) => {
+        masterLevel.addEventListener('input', (e) => {
             e.stopPropagation();
-
+            console.log(e.target.value);
             const settings = {...this.settings};
             settings.song.outputLevel = +e.target.value;
-            settings.changed = { field: 'outputLevel', title: 'Master Level' };
+            settings.changed = { field: 'outputLevel', title: 'Master Level', type: 'outputLevel' };
             this.update(settings);
         });
 
@@ -231,12 +319,18 @@ export class SettingsService {
     }
 
     showMessage(updated) {
-        const messageContainer = document.getElementById('settings-message');
-        messageContainer.innerHTML = `&#936; ${this.settings.changed.title} Updated &#936;`
+        // only one will be shown, but we'll process both
+        const settingsMessage = document.getElementById('settings-message');
+        const balanceMessage = document.getElementById('balance-message');
 
-        messageContainer.style.opacity = '1';
+        settingsMessage.innerHTML = `&#936; ${this.settings.changed.title} Updated &#936;`
+        balanceMessage.innerHTML  = `&#936; ${this.settings.changed.title} Updated &#936;`
+
+        balanceMessage.style.opacity = '1';
+        settingsMessage.style.opacity = '1';
         setTimeout(() => {
-            messageContainer.style.opacity = '0';
+            settingsMessage.style.opacity = '0';
+            balanceMessage.style.opacity = '0';
         }, 2000);
     }
 }

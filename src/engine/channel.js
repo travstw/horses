@@ -21,6 +21,7 @@ export class Channel {
         this.fadeIn = opts.fadeIn;
         this.fadeOut = opts.fadeOut;
         this.automationService = opts.automationService;
+        this.settings = opts.settings;
 
         // make sure audio is decoded before trying to play
         this.audio.ready().subscribe((ready) => {
@@ -32,7 +33,9 @@ export class Channel {
                 // console.log(this.name, startTime, this.context.currentTime);
 
                 this.start(startTime + this.drift);
-                AutomationService.linearRampToValueAtTime(this.output, 'gain', 0.75, startTime + this.drift + this.fadeIn);
+                const trackType = this.settings.song.trackTypes.find(tt => tt.type === this.trackMetadata.type);
+                const gain = trackType ? trackType.level / 100: 1.0;
+                AutomationService.linearRampToValueAtTime(this.output, 'gain', gain, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
                     AutomationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),
