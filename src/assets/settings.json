@@ -29,7 +29,7 @@
         "trackDurationRange": [30, 60],
         "envelope": "linear",
         "envelopeCoEff": 1,
-        "driftEnvelope" : "linear",
+        "driftEnvelope" : "flat",
         "driftCoEff": 0,
         "driftType" : "quantized",
         "decayEnvelope" : "linear",
@@ -525,6 +525,130 @@
             "playThreshold": 0.2,
             "startOffset": -2,
             "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "floaty.mp3",
+            "title": "floaty",
+            "playThreshold": 0.5,
+            "lengthInBeats": 128
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "guitar_do_doo.mp3",
+            "title": "guitar_do_doo",
+            "playThreshold": 0.8,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "mellow_piano.mp3",
+            "title": "mellow_piano",
+            "playThreshold": 0.2,
+            "lengthInBeats": 64
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "slide.mp3",
+            "title": "slide",
+            "playThreshold": 0.6,
+            "lengthInBeats": 32
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "western_fall.mp3",
+            "title": "western_fall",
+            "playThreshold": 0.3,
+            "lengthInBeats": 64
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "floaty_2.mp3",
+            "title": "floaty_2",
+            "playThreshold": 0.6,
+            "lengthInBeats": 16
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "reverse_warble.mp3",
+            "title": "reverse_warble",
+            "playThreshold": 0.3,
+            "lengthInBeats": 16
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "bg_vox_main_harmony.mp3",
+            "title": "bg_vox_main_harmony",
+            "playThreshold": 0.5,
+            "lengthInBeats": 32,
+            "startOffset": -1
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "bg_vox_riding_harmony.mp3",
+            "title": "bg_vox_riding_harmony",
+            "playThreshold": 0.6,
+            "lengthInBeats": 32,
+            "startOffset": -1
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "ambient",
+            "subtype": "background",
+            "filename": "distort_vibe_melody.mp3",
+            "title": "distort_vibe_melody",
+            "playThreshold": 0.8,
+            "lengthInBeats": 16
+        },
+        {
+            "static": false,
+            "drift": true,
+            "decay": true,
+            "type": "vocals",
+            "subtype": "background",
+            "filename": "swamp_witch_1.mp3",
+            "title": "swamp_witch_1",
+            "playThreshold": 0.1,
+            "lengthInBeats": 32,
+            "startOffset": -1
         }
     ]
 }

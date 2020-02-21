@@ -106,8 +106,7 @@ export class Composer {
                     if (tracks.length) {
                         const type = this.settings.song.trackTypes.find(t => t.type === this.settings.changed.field);
                         tracks.forEach(t => {
-                            t.output.value = t.output.value * (type.level / 100);
-                            AutomationService.cancelScheduledValues(t.output, 'gain', 0);
+                            t.output.value = type.level / 100;
                         });
                     }
 

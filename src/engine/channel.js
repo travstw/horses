@@ -12,8 +12,9 @@ export class Channel {
         this.audio = opts.audio;
         this.name = opts.name;
         this.endedEvent$ = opts.endedEvent$;
+        this.fader = NodeFactory.createNode('gain', {context: this.context});
         this.output = NodeFactory.createNode('gain', {context: this.context});
-        this.nodes = [this.audio, ...opts.nodes || [], this.output];
+        this.nodes = [this.audio, ...opts.nodes || [], this.fader, this.output];
         this.analyser = this.context.createAnalyser();
         this.drift = opts.drift;
         this.secondsPerBeat = opts.secondsPerBeat;
@@ -27,7 +28,7 @@ export class Channel {
         this.audio.ready().subscribe((ready) => {
             if (ready) {
                 this.patchSignalChain();
-                AutomationService.setValueAtTime(this.output, 'gain', 0, this.context.currentTime);
+                AutomationService.setValueAtTime(this.fader, 'gain', 0, this.context.currentTime);
                 const startTime = this.calculateStartOffset();
 
                 // console.log(this.name, startTime, this.context.currentTime);
@@ -35,10 +36,11 @@ export class Channel {
                 this.start(startTime + this.drift);
                 const trackType = this.settings.song.trackTypes.find(tt => tt.type === this.trackMetadata.type);
                 const gain = trackType ? trackType.level / 100: 1.0;
-                AutomationService.linearRampToValueAtTime(this.output, 'gain', gain, startTime + this.drift + this.fadeIn);
+                this.output.value = gain;
+                AutomationService.linearRampToValueAtTime(this.fader, 'gain', gain, startTime + this.drift + this.fadeIn);
 
                 if (this.duration) {
-                    AutomationService.setTargetAtTime(this.output, 'gain', 0, startTime + (this.duration - this.fadeOut),
+                    AutomationService.setTargetAtTime(this.fader, 'gain', 0, startTime + (this.duration - this.fadeOut),
                         this.fadeOut / 3);
                 }
 
