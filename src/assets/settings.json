@@ -337,7 +337,7 @@
             "subtype": "background",
             "filename": "lofi_thump.mp3",
             "title": "lofi_thump",
-            "playThreshold": 0.0,
+            "playThreshold": 0.2,
             "lengthInBeats": 16
         },
         {

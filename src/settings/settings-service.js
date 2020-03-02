@@ -74,14 +74,14 @@ export class SettingsService {
         // const envelopeCoEff = document.getElementById('settings-envelope-coeff');
         // envelopeCoEff.value = this.settings.song.envelopeCoEff;
 
-        const driftEnvelope = document.getElementById('settings-drift-envelope');
-        driftEnvelope.value = this.settings.song.driftEnvelope;
+        // const driftEnvelope = document.getElementById('settings-drift-envelope');
+        // driftEnvelope.value = this.settings.song.driftEnvelope;
 
-        const driftCoEff = document.getElementById('settings-drift-coeff');
-        driftCoEff.value = this.settings.song.driftCoEff;
+        // const driftCoEff = document.getElementById('settings-drift-coeff');
+        // driftCoEff.value = this.settings.song.driftCoEff;
 
-        const driftType = document.getElementById('settings-drift-type');
-        driftType.value = this.settings.song.driftType;
+        // const driftType = document.getElementById('settings-drift-type');
+        // driftType.value = this.settings.song.driftType;
 
         // const decayEnvelope = document.getElementById('settings-decay-envelope');
         // decayEnvelope.value = this.settings.song.decayEnvelope;
@@ -196,35 +196,35 @@ export class SettingsService {
         //     this.update(settings);
         // });
 
-        driftEnvelope.addEventListener('change', (e) => {
-            e.stopPropagation();
+        // driftEnvelope.addEventListener('change', (e) => {
+        //     e.stopPropagation();
 
-            const settings = {...this.settings};
-            settings.song.driftEnvelope = e.target.value;
-            settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' , type: 'driftEnvelope'};
+        //     const settings = {...this.settings};
+        //     settings.song.driftEnvelope = e.target.value;
+        //     settings.changed = { field: 'driftEnvelope', title: 'Drift Envelope' , type: 'driftEnvelope'};
 
-            this.update(settings);
-        });
+        //     this.update(settings);
+        // });
 
-        driftType.addEventListener('change', (e) => {
-            e.stopPropagation();
+        // driftType.addEventListener('change', (e) => {
+        //     e.stopPropagation();
 
-            const settings = {...this.settings};
-            settings.song.driftType = e.target.value;
-            settings.changed = { field: 'driftType', title: 'Drift Type', type: 'driftType' };
+        //     const settings = {...this.settings};
+        //     settings.song.driftType = e.target.value;
+        //     settings.changed = { field: 'driftType', title: 'Drift Type', type: 'driftType' };
 
-            this.update(settings);
-        });
+        //     this.update(settings);
+        // });
 
-        driftCoEff.addEventListener('change', (e) => {
-            e.stopPropagation();
+        // driftCoEff.addEventListener('change', (e) => {
+        //     e.stopPropagation();
 
-            const settings = {...this.settings};
-            settings.song.driftCoEff = +e.target.value;
-            settings.changed = { field: 'driftCoEff', title: 'Drift Depth', type: 'driftCoEff' };
+        //     const settings = {...this.settings};
+        //     settings.song.driftCoEff = +e.target.value;
+        //     settings.changed = { field: 'driftCoEff', title: 'Drift Depth', type: 'driftCoEff' };
 
-            this.update(settings);
-        });
+        //     this.update(settings);
+        // });
 
         // decayEnvelope.addEventListener('change', (e) => {
         //     const settings = {...this.settings};

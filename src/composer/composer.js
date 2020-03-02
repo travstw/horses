@@ -352,43 +352,44 @@ export class Composer {
     }
 
     getTheDrift(track) {
+        // leaving drift out for now...as it's not behaving correctly.
+        return 0;
+        // // currently, flat sets the evenlope value to 1 and stays there.
+        // // if flat gets smarter, an update to this will be a TODO
+        // if (this.settings.song.driftEnvelope === 'flat' || !track.drift) {
+        //     return 0;
+        // }
 
-        // currently, flat sets the evenlope value to 1 and stays there.
-        // if flat gets smarter, an update to this will be a TODO
-        if (this.settings.song.driftEnvelope === 'flat' || !track.drift) {
-            return 0;
-        }
+        // const driftEnvelope = this.driftEnvelope.value;
+        // const driftType = this.settings.song.driftType;
+        // const driftAmount = this.settings.song.driftCoEff;
+        // const driftMultiplier = Math.random() * Math.floor(driftEnvelope * 10 * driftAmount);
 
-        const driftEnvelope = this.driftEnvelope.value;
-        const driftType = this.settings.song.driftType;
-        const driftAmount = this.settings.song.driftCoEff;
-        const driftMultiplier = Math.random() * Math.floor(driftEnvelope * 10 * driftAmount);
-
-        // console.log(driftEnvelope, driftType, driftAmount, driftMultiplier);
-        const quantizeMultiplier = driftEnvelope * driftAmount;
-        if (driftType === 'quantized') {
-            if (quantizeMultiplier > .90) {
-                return this.secondsPerBeat * 4 / 2;
-            } else if (quantizeMultiplier > .80) {
-                return this.secondsPerBeat * 4 / 4;
-            } else if (quantizeMultiplier > .70) {
-                return this.secondsPerBeat * 4 / 8;
-            } else if (quantizeMultiplier > .60) {
-                return this.secondsPerBeat * 4 / 16;
-            } else if (quantizeMultiplier > .50) {
-                return this.secondsPerBeat * 4 / 32;
-            } else if (quantizeMultiplier > .40) {
-                return this.secondsPerBeat * 4 / 64;
-            } else if (quantizeMultiplier > .30) {
-                return this.secondsPerBeat * 4 / 128;
-            } else if (quantizeMultiplier > .20) {
-                return this.secondsPerBeat * 4 / 256;
-            } else {
-                return 0;
-            }
-         } else {
-            return driftMultiplier / 10;
-        }
+        // // console.log(driftEnvelope, driftType, driftAmount, driftMultiplier);
+        // const quantizeMultiplier = driftEnvelope * driftAmount;
+        // if (driftType === 'quantized') {
+        //     if (quantizeMultiplier > .90) {
+        //         return this.secondsPerBeat * 4 / 2;
+        //     } else if (quantizeMultiplier > .80) {
+        //         return this.secondsPerBeat * 4 / 4;
+        //     } else if (quantizeMultiplier > .70) {
+        //         return this.secondsPerBeat * 4 / 8;
+        //     } else if (quantizeMultiplier > .60) {
+        //         return this.secondsPerBeat * 4 / 16;
+        //     } else if (quantizeMultiplier > .50) {
+        //         return this.secondsPerBeat * 4 / 32;
+        //     } else if (quantizeMultiplier > .40) {
+        //         return this.secondsPerBeat * 4 / 64;
+        //     } else if (quantizeMultiplier > .30) {
+        //         return this.secondsPerBeat * 4 / 128;
+        //     } else if (quantizeMultiplier > .20) {
+        //         return this.secondsPerBeat * 4 / 256;
+        //     } else {
+        //         return 0;
+        //     }
+        //  } else {
+        //     return driftMultiplier / 10;
+        // }
 
 
     }

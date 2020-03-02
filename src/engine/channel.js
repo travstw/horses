@@ -68,7 +68,7 @@ export class Channel {
         if (this.context.currentTime < playOffset) {
             startTime = playOffset +  (offset * this.secondsPerBeat);
         } else {
-            const nextMeasure = Math.floor(this.context.currentTime / (this.secondsPerBeat * trackLength)) + 1;
+            const nextMeasure = Math.floor(this.context.currentTime / (this.secondsPerBeat * trackLength)) + 2;
             startTime = (nextMeasure * playOffset) + (offset * this.secondsPerBeat);
         }
 
