@@ -2,7 +2,7 @@ export class ModalService {
     constructor() {
         this.modals = document.getElementsByClassName('modals');
         this.modalBG = document.getElementById('modal-background');
-        this.about = document.getElementById('about');
+        // this.about = document.getElementById('about');
         this.settings = document.getElementById('settings');
         this.balance = document.getElementById('balance');
         this.aboutModal = document.getElementById('about-modal');
@@ -55,15 +55,15 @@ export class ModalService {
             this.modalBG.style.display = 'block';
         });
 
-        this.about.addEventListener('click', (e) => {
-            e.stopPropagation()
+        // this.about.addEventListener('click', (e) => {
+        //     e.stopPropagation()
 
-            this.clearModals();
+        //     this.clearModals();
 
-            this.aboutModal.style.opacity = 1;
-            this.aboutModal.style.pointerEvents = 'auto';
-            this.modalBG.style.display = 'block';
-        });
+        //     this.aboutModal.style.opacity = 1;
+        //     this.aboutModal.style.pointerEvents = 'auto';
+        //     this.modalBG.style.display = 'block';
+        // });
 
         this.settings.addEventListener('click', (e) => {
             e.stopPropagation()
